@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings("ignore")
+
 from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -23,11 +26,11 @@ app.add_middleware(
 router = APIRouter()
 
 class ForecastRequest(BaseModel):
-    service: str = Field(default="Plumber", example="Plumber")
-    locality: Optional[str] = Field(default="Kothrud", example="Kothrud")
-    day_of_week: Optional[str] = Field(default="Monday", example="Monday")
-    hour: Optional[int] = Field(default=10, ge=0, le=23, example=10)
-    is_emergency: Optional[bool] = Field(default=False, example=False)
+    service: str = Field(default="Plumber", examples=["Plumber"])
+    locality: Optional[str] = Field(default="Kothrud", examples=["Kothrud"])
+    day_of_week: Optional[str] = Field(default="Monday", examples=["Monday"])
+    hour: Optional[int] = Field(default=10, ge=0, le=23, examples=[10])
+    is_emergency: Optional[bool] = Field(default=False, examples=[False])
 
 class AllocationRequest(BaseModel):
     service: str = Field(default="Plumber")
