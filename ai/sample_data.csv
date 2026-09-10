@@ -1,0 +1,33 @@
+service,locality,day_of_week,hour_of_day,is_weekend,historical_bookings,emergency_requests,demand_level
+Plumber,Kothrud,Monday,9,0,14,2,HIGH
+Plumber,Kothrud,Monday,14,0,6,1,MEDIUM
+Plumber,Kothrud,Monday,19,0,11,3,HIGH
+Plumber,Karve Nagar,Tuesday,10,0,8,1,MEDIUM
+Plumber,Karve Nagar,Tuesday,15,0,4,0,LOW
+Plumber,Shivajinagar,Wednesday,11,0,12,2,HIGH
+Plumber,Deccan Gymkhana,Sunday,10,1,18,5,HIGH
+Plumber,Deccan Gymkhana,Sunday,16,1,10,2,HIGH
+Plumber,Warje,Thursday,13,0,3,0,LOW
+Plumber,Aundh,Friday,18,0,15,4,HIGH
+Electrician,Kothrud,Monday,10,0,12,3,HIGH
+Electrician,Kothrud,Monday,15,0,5,1,MEDIUM
+Electrician,Karve Nagar,Saturday,11,1,16,4,HIGH
+Electrician,Shivajinagar,Tuesday,14,0,7,2,MEDIUM
+Electrician,Deccan Gymkhana,Wednesday,9,0,9,1,MEDIUM
+Electrician,Aundh,Sunday,17,1,19,6,HIGH
+Electrician,Warje,Friday,12,0,4,0,LOW
+Carpenter,Kothrud,Saturday,10,1,15,1,HIGH
+Carpenter,Kothrud,Sunday,14,1,13,0,HIGH
+Carpenter,Karve Nagar,Wednesday,11,0,5,0,LOW
+Carpenter,Shivajinagar,Thursday,15,0,6,0,MEDIUM
+Carpenter,Deccan Gymkhana,Monday,10,0,7,1,MEDIUM
+Cleaner,Kothrud,Sunday,8,1,22,1,HIGH
+Cleaner,Kothrud,Saturday,9,1,20,0,HIGH
+Cleaner,Karve Nagar,Friday,10,0,8,0,MEDIUM
+Cleaner,Shivajinagar,Tuesday,11,0,5,0,LOW
+Painter,Kothrud,Saturday,10,1,11,0,MEDIUM
+Painter,Shivajinagar,Sunday,11,1,14,0,HIGH
+Painter,Karve Nagar,Monday,14,0,3,0,LOW
+Appliance Repair,Kothrud,Monday,11,0,10,2,HIGH
+Appliance Repair,Karve Nagar,Thursday,15,0,6,1,MEDIUM
+Appliance Repair,Shivajinagar,Sunday,12,1,14,3,HIGH

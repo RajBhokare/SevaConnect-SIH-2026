@@ -1,0 +1,20 @@
+{
+  "name": "sevaconnect-workspace",
+  "version": "1.0.0",
+  "description": "SevaConnect - Cooperative-Owned Independent Worker Marketplace",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend start",
+    "build:frontend": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start"
+  },
+  "keywords": [
+    "sevaconnect",
+    "sih2026",
+    "cooperative",
+    "marketplace"
+  ],
+  "author": "SevaConnect Team",
+  "license": "ISC"
+}
