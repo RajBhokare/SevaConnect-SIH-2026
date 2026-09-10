@@ -32,6 +32,10 @@ class AllocationRequest(BaseModel):
     predicted_demand: Optional[str] = Field(default="HIGH")
     workers: List[Dict[str, Any]] = Field(default=[])
 
+class RankRequest(BaseModel):
+    rating: float = Field(default=5.0)
+    reviews: List[str] = Field(default=[])
+
 @app.get("/health")
 def health_check():
     return {
@@ -95,6 +99,52 @@ def get_allocation(req: AllocationRequest):
             available_workers=workers
         )
         return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/rank")
+def rank_worker(req: RankRequest):
+    try:
+        # Simple heuristic to simulate AI sentiment analysis on feedback
+        # 1. Base score starts as their average rating
+        score = req.rating
+        
+        # 2. Adjust based on keyword sentiment in reviews
+        positive_words = ["great", "excellent", "prompt", "good", "best", "perfect", "amazing", "professional"]
+        negative_words = ["bad", "late", "poor", "unprofessional", "rude", "terrible", "worst", "slow"]
+        
+        sentiment_adjustment = 0
+        for review in req.reviews:
+            text = review.lower()
+            for word in positive_words:
+                if word in text:
+                    sentiment_adjustment += 0.1
+            for word in negative_words:
+                if word in text:
+                    sentiment_adjustment -= 0.15
+                    
+        # Cap sentiment adjustment between -1.0 and +0.5
+        sentiment_adjustment = max(-1.0, min(0.5, sentiment_adjustment))
+        final_score = score + sentiment_adjustment
+        
+        # 3. Map final score to 5 Ranks
+        if final_score >= 4.8:
+            rank = "Diamond"
+        elif final_score >= 4.3:
+            rank = "Platinum"
+        elif final_score >= 3.8:
+            rank = "Gold"
+        elif final_score >= 3.0:
+            rank = "Silver"
+        else:
+            rank = "Bronze"
+            
+        return {
+            "rank": rank,
+            "final_score": round(final_score, 2),
+            "original_rating": req.rating,
+            "sentiment_adjustment": round(sentiment_adjustment, 2)
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

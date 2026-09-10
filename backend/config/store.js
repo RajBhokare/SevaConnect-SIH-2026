@@ -164,6 +164,7 @@ const seedInitialData = () => {
       reviewCount: 46,
       completedJobs: 58,
       activeWorkload: 1,
+      rank: 'Diamond',
       bio: 'Certified Master Plumber with 8+ years experience. Specializes in rapid leak detection, brass fittings, and sanitary installations.',
       governmentIdRef: 'GOV-ID-ENC-9988'
     },
@@ -197,6 +198,7 @@ const seedInitialData = () => {
       reviewCount: 29,
       completedJobs: 34,
       activeWorkload: 0,
+      rank: 'Platinum',
       bio: 'Skilled in residential plumbing, motor connections, and instant geyser maintenance.',
       governmentIdRef: 'GOV-ID-ENC-5544'
     },
@@ -230,6 +232,7 @@ const seedInitialData = () => {
       reviewCount: 38,
       completedJobs: 49,
       activeWorkload: 0,
+      rank: 'Diamond',
       bio: 'Licensed Wireman certified by State Electricity Board. Fast response for short circuits and home rewiring.',
       governmentIdRef: 'GOV-ID-ENC-3322'
     },
@@ -263,6 +266,7 @@ const seedInitialData = () => {
       reviewCount: 52,
       completedJobs: 71,
       activeWorkload: 2,
+      rank: 'Diamond',
       bio: 'Expert carpenter specializing in modular kitchen fittings, Godrej locks, and custom woodwork.',
       governmentIdRef: 'GOV-ID-ENC-1100'
     }

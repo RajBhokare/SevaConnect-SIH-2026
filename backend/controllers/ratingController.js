@@ -37,6 +37,28 @@ const submitRating = async (req, res) => {
 
       worker.rating = updatedRating;
       worker.reviewCount = newCount;
+
+      // AI Rank Integration
+      try {
+        const workerRatings = store.ratings.filter(r => r.workerId === booking.workerId);
+        const reviews = workerRatings.map(r => r.comment).filter(c => c && c.trim() !== '');
+        
+        const aiRes = await fetch('http://localhost:8000/rank', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rating: updatedRating,
+            reviews: reviews
+          })
+        });
+        
+        if (aiRes.ok) {
+          const aiData = await aiRes.json();
+          worker.rank = aiData.rank;
+        }
+      } catch (aiError) {
+        console.error('Failed to calculate AI rank:', aiError);
+      }
     }
 
     booking.isRated = true;
@@ -44,7 +66,8 @@ const submitRating = async (req, res) => {
     res.status(201).json({
       message: 'Thank you! Rating recorded successfully.',
       rating: newRating,
-      updatedWorkerRating: worker?.rating
+      updatedWorkerRating: worker?.rating,
+      updatedWorkerRank: worker?.rank
     });
   } catch (error) {
     res.status(500).json({ message: 'Error submitting rating.' });

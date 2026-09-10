@@ -7,6 +7,7 @@ import { Card } from '../../components/ui/Card';
 import { Modal } from '../../components/ui/Modal';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
+import { RankBadge } from '../../components/RankBadge';
 import { formatINR, formatDate } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
@@ -159,6 +160,7 @@ export function WorkerPublicProfile() {
 
           {/* Badges Bar */}
           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+            <RankBadge rank={worker.rank} className="text-sm px-3 py-1" />
             <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
               Verified Cooperative Member

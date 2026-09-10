@@ -37,6 +37,11 @@ const workerSchema = new mongoose.Schema({
   completedJobs: { type: Number, default: 42 },
   activeWorkload: { type: Number, default: 0 }, // For FairMatch workload fairness
   bio: { type: String, default: 'Certified professional with verified background and cooperative membership.' },
+  rank: { 
+    type: String, 
+    enum: ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond'], 
+    default: 'Bronze' 
+  },
   // Government ID is stored privately and MUST NEVER be exposed in public API projections
   governmentIdRef: { type: String, select: false }
 }, { timestamps: true });
