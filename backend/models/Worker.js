@@ -37,11 +37,28 @@ const workerSchema = new mongoose.Schema({
   completedJobs: { type: Number, default: 42 },
   activeWorkload: { type: Number, default: 0 }, // For FairMatch workload fairness
   bio: { type: String, default: 'Certified professional with verified background and cooperative membership.' },
+  
+  // AI-Powered Ranking & Performance Metrics
   rank: { 
     type: String, 
-    enum: ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond'], 
-    default: 'Bronze' 
+    enum: ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Unranked'], 
+    default: 'Unranked' 
   },
+  score: { type: Number, default: 0 },
+  rankConfidence: { type: Number, default: 0.0 },
+  positiveFeedbackPercentage: { type: Number, default: 100 },
+  sentimentScore: { type: Number, default: 0.0 },
+  rankSummary: { type: String, default: 'New Service Provider' },
+  rankBreakdown: {
+    ratingScore: { type: Number, default: 0 },
+    sentimentScore: { type: Number, default: 0 },
+    volumeScore: { type: Number, default: 0 },
+    consistencyScore: { type: Number, default: 0 },
+    reliabilityScore: { type: Number, default: 0 }
+  },
+  topCategories: [{ type: String }],
+  lastCalculatedAt: { type: Date, default: Date.now },
+
   // Government ID is stored privately and MUST NEVER be exposed in public API projections
   governmentIdRef: { type: String, select: false }
 }, { timestamps: true });

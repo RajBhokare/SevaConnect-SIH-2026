@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { workerApi, matchApi, bookingApi } from '../../services/api';
 import { WorkerCard } from '../../components/WorkerCard';
+import { RankBadge } from '../../components/RankBadge';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
@@ -284,9 +285,12 @@ export function ServiceDiscovery() {
                   .slice(0, 2)}
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-bold text-slate-900 truncate">
-                  {activeWorkerForBooking.name}
-                </h4>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-slate-900 truncate">
+                    {activeWorkerForBooking.name}
+                  </h4>
+                  <RankBadge worker={activeWorkerForBooking} rank={activeWorkerForBooking.rank} score={activeWorkerForBooking.score} size="sm" />
+                </div>
                 <p className="text-xs text-slate-500">
                   {activeWorkerForBooking.primarySkill} • {activeWorkerForBooking.experience} yrs exp
                 </p>

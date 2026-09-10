@@ -4,11 +4,12 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from forecast import forecaster
 from allocation import allocator
+from ranking import calculate_provider_rank, analyze_single_feedback, RANK_THRESHOLDS
 
 app = FastAPI(
-    title="SevaConnect AI Operational Engine",
-    description="Microservice providing demand forecasting and fair workforce allocation for cooperative service networks.",
-    version="1.0.0"
+    title="SevaConnect AI Operational & Ranking Engine",
+    description="Microservice providing demand forecasting, fair workforce allocation, and multi-factor AI service provider ranking.",
+    version="2.0.0"
 )
 
 app.add_middleware(
@@ -32,7 +33,22 @@ class AllocationRequest(BaseModel):
     predicted_demand: Optional[str] = Field(default="HIGH")
     workers: List[Dict[str, Any]] = Field(default=[])
 
-class RankRequest(BaseModel):
+class SingleFeedbackRequest(BaseModel):
+    comment: str = Field(default="")
+    stars: int = Field(default=5, ge=1, le=5)
+
+class ProviderRankRequest(BaseModel):
+    worker: Dict[str, Any]
+    ratings: List[Dict[str, Any]] = Field(default=[])
+    bookings: Optional[List[Dict[str, Any]]] = Field(default=[])
+
+class BatchRankRequest(BaseModel):
+    providers: List[Dict[str, Any]]
+    all_ratings: List[Dict[str, Any]] = Field(default=[])
+    all_bookings: Optional[List[Dict[str, Any]]] = Field(default=[])
+
+# Backward compatibility request
+class SimpleRankRequest(BaseModel):
     rating: float = Field(default=5.0)
     reviews: List[str] = Field(default=[])
 
@@ -41,13 +57,14 @@ def health_check():
     return {
         "status": "ok",
         "service": "SevaConnect AI Service",
-        "engine": "Scikit-Learn + Rule Heuristics",
-        "llm_dependency": False
+        "engine": "Scikit-Learn + NLP Sentiment Classifier + Bayesian Ranking",
+        "llm_dependency": False,
+        "ranking_thresholds": RANK_THRESHOLDS
     }
 
 @app.get("/")
 def root():
-    return {"message": "SevaConnect AI Operational Service is running."}
+    return {"message": "SevaConnect AI Operational & Ranking Service is running."}
 
 @app.post("/forecast")
 def get_forecast(req: ForecastRequest):
@@ -66,7 +83,6 @@ def get_forecast(req: ForecastRequest):
 @app.post("/allocate")
 def get_allocation(req: AllocationRequest):
     try:
-        # If workers list is empty, supply default sample pool for demo
         workers = req.workers
         if not workers:
             workers = [
@@ -102,51 +118,51 @@ def get_allocation(req: AllocationRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/rank")
-def rank_worker(req: RankRequest):
+@app.post("/analyze-feedback")
+def analyze_feedback(req: SingleFeedbackRequest):
     try:
-        # Simple heuristic to simulate AI sentiment analysis on feedback
-        # 1. Base score starts as their average rating
-        score = req.rating
-        
-        # 2. Adjust based on keyword sentiment in reviews
-        positive_words = ["great", "excellent", "prompt", "good", "best", "perfect", "amazing", "professional"]
-        negative_words = ["bad", "late", "poor", "unprofessional", "rude", "terrible", "worst", "slow"]
-        
-        sentiment_adjustment = 0
-        for review in req.reviews:
-            text = review.lower()
-            for word in positive_words:
-                if word in text:
-                    sentiment_adjustment += 0.1
-            for word in negative_words:
-                if word in text:
-                    sentiment_adjustment -= 0.15
-                    
-        # Cap sentiment adjustment between -1.0 and +0.5
-        sentiment_adjustment = max(-1.0, min(0.5, sentiment_adjustment))
-        final_score = score + sentiment_adjustment
-        
-        # 3. Map final score to 5 Ranks
-        if final_score >= 4.8:
-            rank = "Diamond"
-        elif final_score >= 4.3:
-            rank = "Platinum"
-        elif final_score >= 3.8:
-            rank = "Gold"
-        elif final_score >= 3.0:
-            rank = "Silver"
-        else:
-            rank = "Bronze"
-            
-        return {
-            "rank": rank,
-            "final_score": round(final_score, 2),
-            "original_rating": req.rating,
-            "sentiment_adjustment": round(sentiment_adjustment, 2)
-        }
+        result = analyze_single_feedback(req.comment, req.stars)
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/rank-provider")
+def rank_provider(req: ProviderRankRequest):
+    try:
+        result = calculate_provider_rank(req.worker, req.ratings, req.bookings)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/rank-all")
+def rank_all_providers(req: BatchRankRequest):
+    try:
+        results = []
+        for worker in req.providers:
+            w_id = worker.get("_id")
+            w_ratings = [r for r in req.all_ratings if r.get("workerId") == w_id]
+            w_bookings = [b for b in req.all_bookings if b.get("workerId") == w_id] if req.all_bookings else []
+            rank_info = calculate_provider_rank(worker, w_ratings, w_bookings)
+            results.append(rank_info)
+        return {"providers": results, "thresholds": RANK_THRESHOLDS}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Backward compatibility route
+@app.post("/rank")
+def rank_worker_compat(req: SimpleRankRequest):
+    dummy_worker = {"_id": "dummy", "name": "Provider", "rating": req.rating, "completedJobs": max(len(req.reviews), 10)}
+    dummy_ratings = [{"stars": int(round(req.rating)), "comment": r} for r in req.reviews]
+    if len(dummy_ratings) < 3:
+        # Fill minimum dummy ratings for simple route
+        dummy_ratings.extend([{"stars": int(round(req.rating)), "comment": "Good job"} for _ in range(3 - len(dummy_ratings))])
+    res = calculate_provider_rank(dummy_worker, dummy_ratings)
+    return {
+        "rank": res["rank"],
+        "final_score": res["score"],
+        "original_rating": req.rating,
+        "sentiment_adjustment": res["sentimentScore"]
+    }
 
 if __name__ == "__main__":
     import uvicorn

@@ -160,7 +160,7 @@ export function WorkerPublicProfile() {
 
           {/* Badges Bar */}
           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
-            <RankBadge rank={worker.rank} className="text-sm px-3 py-1" />
+            <RankBadge worker={worker} rank={worker.rank} score={worker.score} size="lg" />
             <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
               Verified Cooperative Member
@@ -191,8 +191,8 @@ export function WorkerPublicProfile() {
             </div>
 
             <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
-              <p className="text-[10px] text-slate-500 font-semibold uppercase">Experience</p>
-              <p className="text-sm font-black text-slate-800 mt-0.5">{worker.experience} Years</p>
+              <p className="text-[10px] text-slate-500 font-semibold uppercase">AI Performance Score</p>
+              <p className="text-sm font-black text-brand-700 mt-0.5">{worker.score || 0}/100</p>
             </div>
 
             <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
@@ -236,12 +236,17 @@ export function WorkerPublicProfile() {
         </div>
       </Card>
 
-      {/* Customer Reviews Section */}
+      {/* Customer Reviews Section with AI Sentiment Tags */}
       <Card className="border-slate-200 p-6 space-y-4">
-        <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-          Verified Community Reviews ({reviews.length > 0 ? reviews.length : worker.reviewCount || 1})
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+            Verified Community Reviews ({reviews.length > 0 ? reviews.length : worker.reviewCount || 1})
+          </h3>
+          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+            {worker.positiveFeedbackPercentage || 100}% Positive Feedback
+          </span>
+        </div>
 
         {reviews.length === 0 ? (
           <div className="p-4 bg-slate-50 rounded-2xl text-xs text-slate-500">
@@ -252,10 +257,20 @@ export function WorkerPublicProfile() {
             {reviews.map((rev) => (
               <div
                 key={rev._id}
-                className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5"
+                className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-800">{rev.customerName}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-800">{rev.customerName}</span>
+                    {rev.sentiment && (
+                      <span className={`text-[10px] font-bold px-2 py-0.2 rounded-md ${
+                        rev.sentiment === 'positive' ? 'bg-emerald-100 text-emerald-800' :
+                        rev.sentiment === 'negative' ? 'bg-rose-100 text-rose-800' : 'bg-slate-200 text-slate-700'
+                      }`}>
+                        {rev.sentiment === 'positive' ? 'Positive' : rev.sentiment === 'negative' ? 'Critical' : 'Neutral'}
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-0.5">
                     {Array.from({ length: rev.stars }).map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
@@ -265,7 +280,16 @@ export function WorkerPublicProfile() {
                 {rev.comment && (
                   <p className="text-xs text-slate-600 leading-relaxed">{rev.comment}</p>
                 )}
-                <span className="text-[10px] text-slate-400 block">{formatDate(rev.createdAt)}</span>
+                <div className="flex flex-wrap items-center justify-between gap-1 pt-1">
+                  <div className="flex flex-wrap gap-1">
+                    {rev.categories && rev.categories.map((cat, ci) => (
+                      <span key={ci} className="px-2 py-0.5 bg-white text-slate-600 rounded text-[10px] font-medium border border-slate-200">
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
+                  <span className="text-[10px] text-slate-400 block">{formatDate(rev.createdAt)}</span>
+                </div>
               </div>
             ))}
           </div>

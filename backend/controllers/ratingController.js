@@ -1,4 +1,5 @@
 const store = require('../config/store');
+const { calculateAndSaveProviderRank } = require('./rankingController');
 
 // Submit Rating & Review
 const submitRating = async (req, res) => {
@@ -14,6 +15,29 @@ const submitRating = async (req, res) => {
       return res.status(404).json({ message: 'Booking record not found.' });
     }
 
+    // AI Feedback Sentiment Analysis
+    let sentiment = stars >= 4 ? 'positive' : (stars === 3 ? 'neutral' : 'negative');
+    let sentimentScore = (stars - 3) / 2.0;
+    let confidence = 0.85;
+    let categories = ['Customer Satisfaction'];
+
+    try {
+      const aiSentimentRes = await fetch('http://localhost:8000/analyze-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment: comment || '', stars: Number(stars) })
+      });
+      if (aiSentimentRes.ok) {
+        const aiSentimentData = await aiSentimentRes.json();
+        sentiment = aiSentimentData.sentiment;
+        sentimentScore = aiSentimentData.sentimentScore;
+        confidence = aiSentimentData.confidence;
+        categories = aiSentimentData.categories;
+      }
+    } catch (err) {
+      console.warn('AI feedback analysis fallback applied.');
+    }
+
     const newRating = {
       _id: `rate-${Date.now()}`,
       bookingId: booking._id,
@@ -22,6 +46,10 @@ const submitRating = async (req, res) => {
       workerId: booking.workerId,
       stars: Number(stars),
       comment: comment || '',
+      sentiment,
+      sentimentScore,
+      confidence,
+      categories,
       createdAt: new Date().toISOString()
     };
 
@@ -30,46 +58,28 @@ const submitRating = async (req, res) => {
     // Update worker aggregate rating
     const worker = store.workers.find(w => w._id === booking.workerId);
     if (worker) {
-      const currentRating = worker.rating || 5.0;
-      const currentCount = worker.reviewCount || 1;
-      const newCount = currentCount + 1;
-      const updatedRating = Math.round(((currentRating * currentCount + Number(stars)) / newCount) * 10) / 10;
+      const workerRatings = store.ratings.filter(r => r.workerId === worker._id);
+      const totalStars = workerRatings.reduce((sum, r) => sum + r.stars, 0);
+      const newAvgRating = Math.round((totalStars / workerRatings.length) * 10) / 10;
 
-      worker.rating = updatedRating;
-      worker.reviewCount = newCount;
+      worker.rating = newAvgRating;
+      worker.reviewCount = workerRatings.length;
 
-      // AI Rank Integration
-      try {
-        const workerRatings = store.ratings.filter(r => r.workerId === booking.workerId);
-        const reviews = workerRatings.map(r => r.comment).filter(c => c && c.trim() !== '');
-        
-        const aiRes = await fetch('http://localhost:8000/rank', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            rating: updatedRating,
-            reviews: reviews
-          })
-        });
-        
-        if (aiRes.ok) {
-          const aiData = await aiRes.json();
-          worker.rank = aiData.rank;
-        }
-      } catch (aiError) {
-        console.error('Failed to calculate AI rank:', aiError);
-      }
+      // Automatically recalculate and update provider AI rank
+      await calculateAndSaveProviderRank(worker._id);
     }
 
     booking.isRated = true;
 
     res.status(201).json({
-      message: 'Thank you! Rating recorded successfully.',
+      message: 'Thank you! Rating recorded and AI provider rank updated.',
       rating: newRating,
       updatedWorkerRating: worker?.rating,
-      updatedWorkerRank: worker?.rank
+      updatedWorkerRank: worker?.rank,
+      updatedWorkerScore: worker?.score
     });
   } catch (error) {
+    console.error('Submit rating error:', error);
     res.status(500).json({ message: 'Error submitting rating.' });
   }
 };

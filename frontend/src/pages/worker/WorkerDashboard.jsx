@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { workerApi, bookingApi } from '../../services/api';
 import { BookingCard } from '../../components/BookingCard';
+import { RankBadge } from '../../components/RankBadge';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -122,6 +123,7 @@ export function WorkerDashboard() {
       <div className="bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-2">
+            <RankBadge worker={worker} rank={worker?.rank} score={worker?.score} size="md" />
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-bold border border-emerald-400/30">
               <ShieldCheck className="w-4 h-4" />
               Verified Cooperative Member

@@ -67,10 +67,19 @@ export const ratingApi = {
   getWorkerRatings: (workerId) => api.get(`/ratings/worker/${workerId}`)
 };
 
+// AI Provider Ranking APIs
+export const rankingApi = {
+  getProviderRanking: (workerId) => api.get(`/ranking/provider/${workerId}`),
+  getLeaderboard: () => api.get('/ranking/leaderboard'),
+  recalculateAll: () => api.post('/ranking/recalculate-all')
+};
+
 // AI Operational Service APIs (FastAPI proxy)
 export const aiApi = {
   getForecast: (params) => axios.post('/ai/forecast', params),
   getAllocation: (params) => axios.post('/ai/allocate', params),
+  analyzeFeedback: (params) => axios.post('/ai/analyze-feedback', params),
+  rankProvider: (params) => axios.post('/ai/rank-provider', params),
   getHealth: () => axios.get('/ai/health')
 };
 

@@ -11,6 +11,7 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const ratingRoutes = require('./routes/ratingRoutes');
 const matchRoutes = require('./routes/matchRoutes');
+const rankingRoutes = require('./routes/rankingRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -34,6 +35,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/ratings', ratingRoutes);
 app.use('/api/match', matchRoutes);
+app.use('/api/ranking', rankingRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
