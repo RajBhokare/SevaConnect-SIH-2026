@@ -90,3 +90,5 @@ The login screen includes one-click **⚡ Quick Demo Autofill** buttons:
 
 5. **AI Demand Forecasting & Workforce Allocation**:
    - Microservice forecasting locality booking surge volume and advising cooperative coordinators on fair standby worker distribution without autonomous worker coercion.
+
+SIH 2026
