@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "SevaConnect - Cooperative-Owned Independent Worker Marketplace",
   "scripts": {
-    "dev": "npm --prefix frontend run dev",
+    "dev": "concurrently -n frontend,backend,ai -c cyan,green,magenta \"npm:dev:frontend\" \"npm:dev:backend\" \"npm:dev:ai\"",
+    "dev:all": "concurrently -n frontend,backend,ai -c cyan,green,magenta \"npm:dev:frontend\" \"npm:dev:backend\" \"npm:dev:ai\"",
     "dev:frontend": "npm --prefix frontend run dev",
     "dev:backend": "npm --prefix backend start",
+    "dev:ai": "python ai/main.py",
     "build": "npm --prefix frontend run build",
     "build:frontend": "npm --prefix frontend run build",
     "start": "npm --prefix backend start"
@@ -17,5 +19,8 @@
     "marketplace"
   ],
   "author": "SevaConnect Team",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
 }
