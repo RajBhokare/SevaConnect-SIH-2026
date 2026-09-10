@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
@@ -19,6 +19,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+router = APIRouter()
 
 class ForecastRequest(BaseModel):
     service: str = Field(default="Plumber", example="Plumber")
@@ -52,21 +54,26 @@ class SimpleRankRequest(BaseModel):
     rating: float = Field(default=5.0)
     reviews: List[str] = Field(default=[])
 
-@app.get("/health")
+@router.get("/health")
 def health_check():
     return {
+        "success": True,
         "status": "ok",
+        "message": "SevaConnect AI service is running",
         "service": "SevaConnect AI Service",
         "engine": "Scikit-Learn + NLP Sentiment Classifier + Bayesian Ranking",
         "llm_dependency": False,
         "ranking_thresholds": RANK_THRESHOLDS
     }
 
-@app.get("/")
+@router.get("/")
 def root():
-    return {"message": "SevaConnect AI Operational & Ranking Service is running."}
+    return {
+        "success": True,
+        "message": "SevaConnect AI Operational & Ranking Service is running."
+    }
 
-@app.post("/forecast")
+@router.post("/forecast")
 def get_forecast(req: ForecastRequest):
     try:
         result = forecaster.predict_demand(
@@ -80,7 +87,7 @@ def get_forecast(req: ForecastRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/allocate")
+@router.post("/allocate")
 def get_allocation(req: AllocationRequest):
     try:
         workers = req.workers
@@ -118,7 +125,7 @@ def get_allocation(req: AllocationRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/analyze-feedback")
+@router.post("/analyze-feedback")
 def analyze_feedback(req: SingleFeedbackRequest):
     try:
         result = analyze_single_feedback(req.comment, req.stars)
@@ -126,7 +133,7 @@ def analyze_feedback(req: SingleFeedbackRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/rank-provider")
+@router.post("/rank-provider")
 def rank_provider(req: ProviderRankRequest):
     try:
         result = calculate_provider_rank(req.worker, req.ratings, req.bookings)
@@ -134,7 +141,7 @@ def rank_provider(req: ProviderRankRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/rank-all")
+@router.post("/rank-all")
 def rank_all_providers(req: BatchRankRequest):
     try:
         results = []
@@ -149,7 +156,7 @@ def rank_all_providers(req: BatchRankRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 # Backward compatibility route
-@app.post("/rank")
+@router.post("/rank")
 def rank_worker_compat(req: SimpleRankRequest):
     dummy_worker = {"_id": "dummy", "name": "Provider", "rating": req.rating, "completedJobs": max(len(req.reviews), 10)}
     dummy_ratings = [{"stars": int(round(req.rating)), "comment": r} for r in req.reviews]
@@ -164,6 +171,11 @@ def rank_worker_compat(req: SimpleRankRequest):
         "sentiment_adjustment": res["sentimentScore"]
     }
 
+# Register routes at both root and /ai prefix
+app.include_router(router)
+app.include_router(router, prefix="/ai")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+

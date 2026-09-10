@@ -139,7 +139,8 @@ const calculateAndSaveProviderRank = async (workerId) => {
 
     // 1. Attempt AI Microservice calculation
     try {
-      const response = await fetch('http://localhost:8000/rank-provider', {
+      const aiServiceUrl = (process.env.AI_SERVICE_URL || 'http://localhost:8000').replace(/\/$/, '');
+      const response = await fetch(`${aiServiceUrl}/rank-provider`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

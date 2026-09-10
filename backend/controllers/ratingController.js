@@ -21,8 +21,10 @@ const submitRating = async (req, res) => {
     let confidence = 0.85;
     let categories = ['Customer Satisfaction'];
 
+    const aiServiceUrl = (process.env.AI_SERVICE_URL || 'http://localhost:8000').replace(/\/$/, '');
+
     try {
-      const aiSentimentRes = await fetch('http://localhost:8000/analyze-feedback', {
+      const aiSentimentRes = await fetch(`${aiServiceUrl}/analyze-feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ comment: comment || '', stars: Number(stars) })

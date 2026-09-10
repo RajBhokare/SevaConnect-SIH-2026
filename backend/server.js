@@ -38,9 +38,11 @@ app.use('/api/match', matchRoutes);
 app.use('/api/ranking', rankingRoutes);
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
+    success: true,
     status: 'ok',
+    message: 'SevaConnect backend is running',
     service: 'SevaConnect Backend API',
     mongoConnected: getDBStatus(),
     timestamp: new Date().toISOString()
@@ -56,10 +58,15 @@ app.get('/', (req, res) => {
 app.use((err, req, res, next) => {
   console.error('[Unhandled Error]:', err.stack);
   res.status(500).json({
+    success: false,
     message: err.message || 'Internal Server Error'
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`[SevaConnect Backend] Server running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`[SevaConnect Backend] Server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
