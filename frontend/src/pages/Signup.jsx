@@ -80,8 +80,8 @@ export function Signup() {
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-lg space-y-6">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-brand-600 text-white shadow-md mb-1">
-            <HeartHandshake className="w-7 h-7" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl overflow-hidden shadow-md shadow-brand-500/20 mb-1 border border-slate-100 bg-white">
+            <img src="/logo.png" alt="SevaConnect Logo" className="w-full h-full object-contain p-1" />
           </div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">
             Join <span className="text-brand-600">SevaConnect</span>

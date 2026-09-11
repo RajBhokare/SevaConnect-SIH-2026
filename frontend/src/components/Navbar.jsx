@@ -57,9 +57,11 @@ export function Navbar() {
           {/* Brand Logo & Tagline */}
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 rounded-xl bg-brand-600 group-hover:bg-brand-700 transition-colors flex items-center justify-center text-white shadow-sm shadow-brand-500/30">
-                <HeartHandshake className="w-6 h-6" />
-              </div>
+              <img
+                src="/logo.png"
+                alt="SevaConnect Logo"
+                className="w-10 h-10 rounded-xl object-contain shadow-sm border border-slate-100 group-hover:scale-105 transition-transform"
+              />
               <div className="flex flex-col">
                 <span className="font-bold text-lg text-slate-900 leading-tight tracking-tight">
                   Seva<span className="text-brand-600">Connect</span>

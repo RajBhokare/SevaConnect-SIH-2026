@@ -119,9 +119,12 @@ export default function App() {
       {/* Global Minimal Footer */}
       <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="font-semibold text-slate-700">
-            SevaConnect © 2026 — Cooperative-Owned Independent Worker Marketplace
-          </p>
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="SevaConnect Logo" className="w-5 h-5 rounded-md object-contain" />
+            <p className="font-semibold text-slate-700">
+              SevaConnect © 2026 — Cooperative-Owned Independent Worker Marketplace
+            </p>
+          </div>
           <p className="text-[11px] text-slate-400">
             Internal SIH 2026 • PS 26089 • Connecting Skills. Empowering Communities.
           </p>
