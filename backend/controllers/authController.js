@@ -3,9 +3,19 @@ const jwt = require('jsonwebtoken');
 const store = require('../config/store');
 const { JWT_SECRET } = require('../middleware/authMiddleware');
 
-// Generate JWT
-const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, JWT_SECRET, { expiresIn: '7d' });
+// Generate JWT with identity payload for resilience across server reloads
+const generateToken = (userOrId, role) => {
+  if (typeof userOrId === 'object' && userOrId !== null) {
+    return jwt.sign({
+      id: userOrId._id ? userOrId._id.toString() : userOrId.id,
+      role: userOrId.role,
+      name: userOrId.name,
+      email: userOrId.email,
+      phone: userOrId.phone,
+      location: userOrId.location
+    }, JWT_SECRET, { expiresIn: '7d' });
+  }
+  return jwt.sign({ id: userOrId, role }, JWT_SECRET, { expiresIn: '7d' });
 };
 
 // Customer / Worker Signup
@@ -84,7 +94,7 @@ const signup = async (req, res) => {
       store.workers.push(workerProfile);
     }
 
-    const token = generateToken(newUser._id, newUser.role);
+    const token = generateToken(newUser);
 
     res.status(201).json({
       token,
@@ -140,7 +150,7 @@ const login = async (req, res) => {
       }
     }
 
-    const token = generateToken(user._id, user.role);
+    const token = generateToken(user);
 
     res.json({
       token,
