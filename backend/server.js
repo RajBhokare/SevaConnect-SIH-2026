@@ -27,15 +27,15 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/workers', workerRoutes);
-app.use('/api/services', serviceRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/ratings', ratingRoutes);
-app.use('/api/match', matchRoutes);
-app.use('/api/ranking', rankingRoutes);
+// API Routes (supports both /api/xxx and /xxx for direct and serverless rewrites)
+app.use(['/api/auth', '/auth'], authRoutes);
+app.use(['/api/workers', '/workers'], workerRoutes);
+app.use(['/api/services', '/services'], serviceRoutes);
+app.use(['/api/bookings', '/bookings'], bookingRoutes);
+app.use(['/api/payments', '/payments'], paymentRoutes);
+app.use(['/api/ratings', '/ratings'], ratingRoutes);
+app.use(['/api/match', '/match'], matchRoutes);
+app.use(['/api/ranking', '/ranking'], rankingRoutes);
 
 // Health check endpoint
 app.get(['/api/health', '/health'], (req, res) => {
