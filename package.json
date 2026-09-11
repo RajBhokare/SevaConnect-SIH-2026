@@ -8,8 +8,9 @@
     "dev:frontend": "npm --silent --prefix frontend run dev",
     "dev:backend": "npm --silent --prefix backend start",
     "dev:ai": "python ai/main.py",
-    "build": "npm --prefix frontend run build",
-    "build:frontend": "npm --prefix frontend run build",
+    "postinstall": "npm --prefix frontend install --include=dev && npm --prefix backend install",
+    "build": "npm --prefix frontend install --include=dev && npm --prefix frontend run build",
+    "build:frontend": "npm --prefix frontend install --include=dev && npm --prefix frontend run build",
     "start": "npm --prefix backend start"
   },
   "keywords": [
