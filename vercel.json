@@ -17,22 +17,26 @@
     {
       "source": "/api/(.*)?",
       "destination": {
-        "type": "service",
         "service": "backend"
       }
     },
     {
       "source": "/ai/(.*)?",
       "destination": {
-        "type": "service",
         "service": "ai"
+      }
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": {
+        "service": "frontend"
       }
     },
     {
       "source": "/(.*)",
       "destination": {
-        "type": "service",
-        "service": "frontend"
+        "service": "frontend",
+        "path": "/index.html"
       }
     }
   ]
