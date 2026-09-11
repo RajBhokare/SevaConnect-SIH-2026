@@ -92,13 +92,13 @@ export function Signup() {
         </div>
 
         {/* Role Toggle Switch */}
-        <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-200/80 rounded-2xl">
+        <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-100/90 border border-slate-200/80 rounded-2xl">
           <button
             type="button"
             onClick={() => setRole('CUSTOMER')}
             className={`py-2.5 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 ${
               role === 'CUSTOMER'
-                ? 'bg-white text-brand-700 shadow-sm'
+                ? 'bg-white text-brand-800 shadow-subtle border border-slate-200/60'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -110,7 +110,7 @@ export function Signup() {
             onClick={() => setRole('WORKER')}
             className={`py-2.5 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 ${
               role === 'WORKER'
-                ? 'bg-white text-emerald-700 shadow-sm'
+                ? 'bg-white text-coop-700 shadow-subtle border border-slate-200/60'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -119,7 +119,7 @@ export function Signup() {
           </button>
         </div>
 
-        <Card className="border-slate-200/90 shadow-lg">
+        <Card className="border-slate-200/90 shadow-card bg-white">
           <CardContent className="p-6">
             <form onSubmit={handleSignup} className="space-y-4">
               <Input
