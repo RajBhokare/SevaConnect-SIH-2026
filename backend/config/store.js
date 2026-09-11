@@ -57,6 +57,51 @@ let services = [
     startingPrice: 299,
     icon: 'Cpu',
     popularTasks: ['Washing Machine Drain Fix', 'Fridge Cooling Repair', 'Microwave Servicing', 'Geyser Installation']
+  },
+  {
+    _id: 'srv-7',
+    title: 'Domestic Help & Housekeeping',
+    category: 'Domestic Helper',
+    description: 'Daily household assistance, dishwashing, dusting, floor mopping, kitchen support.',
+    startingPrice: 199,
+    icon: 'Users',
+    popularTasks: ['Daily Kitchen Help', 'Full House Dusting', 'Dishwashing Support', 'Weekly Deep Mopping']
+  },
+  {
+    _id: 'srv-8',
+    title: 'Elder & Patient Caregiving',
+    category: 'Caregiver',
+    description: 'Compassionate assistance for senior citizens, mobility support, medicine reminders.',
+    startingPrice: 349,
+    icon: 'HeartHandshake',
+    popularTasks: ['Elder Companion Care', 'Mobility & Walking Assist', 'Medicine Timetable Support', 'Post-Op Assistance']
+  },
+  {
+    _id: 'srv-9',
+    title: 'Gardening & Plant Care',
+    category: 'Gardener',
+    description: 'Lawn mowing, balcony garden pruning, repotting, organic pest control, soil tilling.',
+    startingPrice: 249,
+    icon: 'Sparkles',
+    popularTasks: ['Balcony Garden Setup', 'Plant Pruning & Trimming', 'Organic Soil Tilling', 'Pest Control Spray']
+  },
+  {
+    _id: 'srv-10',
+    title: 'On-Demand & Chauffeur Driving',
+    category: 'Driver',
+    description: 'Temporary car drivers, outstation journeys, city transit, and emergency driving.',
+    startingPrice: 299,
+    icon: 'ShieldCheck',
+    popularTasks: ['City Intra-Transit', 'Airport Drop & Pickup', 'Outstation Highway Driver', 'Senior Citizen Transit']
+  },
+  {
+    _id: 'srv-11',
+    title: 'Other Community Household Services',
+    category: 'Other Household Services',
+    description: 'Pest control, water purifier servicing, rooftop waterproofing, small masonry repairs.',
+    startingPrice: 249,
+    icon: 'Wrench',
+    popularTasks: ['RO Filter Service', 'Masonry Touchup', 'Pest Extermination', 'Balcony Netting Fix']
   }
 ];
 

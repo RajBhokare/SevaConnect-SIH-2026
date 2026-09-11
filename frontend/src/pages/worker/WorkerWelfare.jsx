@@ -55,13 +55,13 @@ export function WorkerWelfare() {
       <div>
         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200 mb-2">
           <HeartHandshake className="w-4 h-4" />
-          Cooperative Social Security & Welfare
+          Welfare & Insurance Integration Ready
         </div>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-          Worker Protection & Cooperative Fund
+          Independent Worker Welfare & Social Security Layer
         </h1>
         <p className="text-xs text-slate-500 mt-0.5">
-          SevaConnect guarantees autonomous worker welfare, automatic insurance protection, and cooperative dividends.
+          Worker welfare information and future cooperative insurance integration layer under Ministry of Cooperation guidelines.
         </p>
       </div>
 

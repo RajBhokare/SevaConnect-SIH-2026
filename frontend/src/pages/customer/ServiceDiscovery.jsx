@@ -30,7 +30,12 @@ const CATEGORIES = [
   'Carpenter',
   'Cleaner',
   'Painter',
-  'Appliance Repair'
+  'Appliance Repair',
+  'Domestic Helper',
+  'Caregiver',
+  'Gardener',
+  'Driver',
+  'Other Household Services'
 ];
 
 export function ServiceDiscovery() {

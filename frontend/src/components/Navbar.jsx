@@ -192,6 +192,21 @@ export function Navbar() {
               </button>
             )}
 
+            {/* Multilingual Switcher Pill */}
+            <div className="flex items-center bg-slate-100 rounded-xl p-0.5 border border-slate-200 text-[11px] font-bold">
+              <button
+                onClick={() => {
+                  const newLang = localStorage.getItem('sevaconnect_lang') === 'hi' ? 'en' : 'hi';
+                  localStorage.setItem('sevaconnect_lang', newLang);
+                  window.location.reload();
+                }}
+                className="px-2 py-1 rounded-lg transition-all text-slate-700 hover:text-brand-700 flex items-center gap-1"
+                title="Toggle English / हिन्दी"
+              >
+                🌐 <span className="font-semibold">{localStorage.getItem('sevaconnect_lang') === 'hi' ? 'हिन्दी' : 'EN'}</span>
+              </button>
+            </div>
+
             {isAuthenticated ? (
               <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
                 <div className="text-right">
@@ -199,7 +214,7 @@ export function Navbar() {
                     {user?.name}
                   </p>
                   <p className="text-[10px] text-slate-500 font-medium">
-                    {role === 'WORKER' ? 'Cooperative Worker' : 'Customer'}
+                    {role === 'WORKER' ? 'Independent Worker' : 'Customer'}
                   </p>
                 </div>
                 <Button

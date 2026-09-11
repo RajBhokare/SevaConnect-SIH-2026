@@ -167,13 +167,16 @@ export function AiOperations() {
       <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl space-y-3">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-bold border border-purple-400/30">
           <Sparkles className="w-4 h-4" />
-          Cooperative AI Operational Engine & Quality Intelligence
+          Cooperative Workforce Intelligence • PS 26089
         </div>
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-          AI Provider Performance & Operational Forecasting
+          Cooperative Workforce Intelligence & Demand Forecasting
         </h1>
-        <p className="text-xs sm:text-sm text-purple-200 leading-relaxed max-w-2xl">
-          Multi-factor Bayesian review analysis, NLP sentiment classification, and locality demand forecasting.
+        <p className="text-xs sm:text-sm text-purple-200 leading-relaxed max-w-3xl">
+          Locality-level demand forecasting, fair workforce allocation recommendations, and multi-factor quality intelligence for cooperative federation planning.
+        </p>
+        <p className="text-[11px] text-purple-300/80 bg-white/10 px-3 py-1.5 rounded-xl border border-white/15 inline-block">
+          💡 <strong>Principle:</strong> AI supports aggregate cooperative capacity planning. Individual job opportunities are assigned transparently via FairMatch.
         </p>
 
         {/* View Switcher Tabs */}
