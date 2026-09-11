@@ -27,34 +27,34 @@ export function RankBadge({
 
   const rankConfig = {
     Diamond: {
-      color: 'bg-gradient-to-r from-cyan-500/15 via-blue-500/15 to-indigo-500/15 text-blue-900 border-cyan-400/80 shadow-xs ring-1 ring-cyan-300/40',
+      color: 'bg-blue-50 text-blue-800 border-blue-200/90 shadow-subtle',
       iconText: '💠',
-      icon: <Gem className="w-3.5 h-3.5 text-cyan-600 fill-cyan-400" />,
+      icon: <Gem className="w-3.5 h-3.5 text-blue-600" />,
       label: 'Diamond Provider',
-      tagline: 'Top 5% Performance • Outstanding Satisfaction',
+      tagline: 'Top Performance • Outstanding Satisfaction',
       scoreRange: '90–100',
-      bgGlow: 'from-cyan-50 to-blue-50'
+      bgGlow: 'from-blue-50 to-slate-50'
     },
     Platinum: {
-      color: 'bg-gradient-to-r from-purple-500/15 to-indigo-500/15 text-purple-900 border-purple-300 shadow-xs ring-1 ring-purple-200',
+      color: 'bg-indigo-50 text-indigo-800 border-indigo-200/90 shadow-subtle',
       iconText: '💎',
-      icon: <Crown className="w-3.5 h-3.5 text-purple-600 fill-purple-300" />,
+      icon: <Crown className="w-3.5 h-3.5 text-indigo-600" />,
       label: 'Platinum Provider',
-      tagline: 'Top Tier Artisan • High Reliability & Ratings',
+      tagline: 'Top Tier Artisan • High Reliability',
       scoreRange: '75–89',
-      bgGlow: 'from-purple-50 to-indigo-50'
+      bgGlow: 'from-indigo-50 to-slate-50'
     },
     Gold: {
-      color: 'bg-amber-50 text-amber-900 border-amber-300 shadow-xs',
+      color: 'bg-amber-50 text-amber-900 border-amber-200/90 shadow-subtle',
       iconText: '🥇',
-      icon: <Award className="w-3.5 h-3.5 text-amber-600 fill-amber-300" />,
+      icon: <Award className="w-3.5 h-3.5 text-amber-600" />,
       label: 'Gold Provider',
-      tagline: 'Consistent Quality • Proven Customer Satisfaction',
+      tagline: 'Consistent Quality • High Customer Satisfaction',
       scoreRange: '60–74',
-      bgGlow: 'from-amber-50 to-yellow-50'
+      bgGlow: 'from-amber-50 to-orange-50'
     },
     Silver: {
-      color: 'bg-slate-100 text-slate-800 border-slate-300',
+      color: 'bg-slate-100 text-slate-800 border-slate-200 shadow-subtle',
       iconText: '🥈',
       icon: <Medal className="w-3.5 h-3.5 text-slate-500" />,
       label: 'Silver Provider',
@@ -63,11 +63,11 @@ export function RankBadge({
       bgGlow: 'from-slate-50 to-zinc-50'
     },
     Bronze: {
-      color: 'bg-orange-50 text-orange-900 border-orange-200',
+      color: 'bg-orange-50 text-orange-900 border-orange-200 shadow-subtle',
       iconText: '🥉',
       icon: <Medal className="w-3.5 h-3.5 text-orange-600" />,
       label: 'Bronze Provider',
-      tagline: 'Entry Cooperative Tier • Verified Foundation',
+      tagline: 'Verified Cooperative Foundation',
       scoreRange: '0–39',
       bgGlow: 'from-orange-50 to-amber-50'
     },
@@ -76,7 +76,7 @@ export function RankBadge({
       iconText: '🆕',
       icon: <Sparkles className="w-3.5 h-3.5 text-slate-400" />,
       label: 'New Provider',
-      tagline: 'Needs 3+ customer reviews for AI rank tier',
+      tagline: 'Requires initial customer reviews for tier assignment',
       scoreRange: '< 3 Reviews',
       bgGlow: 'from-slate-50 to-gray-50'
     }

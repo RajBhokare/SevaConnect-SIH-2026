@@ -174,13 +174,13 @@ export function ServiceDiscovery() {
 
           {/* Quick Search */}
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Search by name, skill, or area..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full pl-10 pr-3.5 py-2.5 bg-white text-slate-900 border border-slate-200/90 rounded-xl text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-subtle transition-all"
             />
           </div>
         </div>
@@ -194,10 +194,10 @@ export function ServiceDiscovery() {
                 setSelectedCategory(cat);
                 setSearchParams(cat === 'All' ? {} : { category: cat });
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                 selectedCategory === cat
-                  ? 'bg-brand-600 text-white shadow-sm shadow-brand-500/20'
-                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
+                  ? 'bg-brand-600 text-white shadow-subtle'
+                  : 'bg-white text-slate-700 border border-slate-200/90 hover:bg-slate-50/90 hover:border-slate-300'
               }`}
             >
               {cat}
@@ -206,16 +206,16 @@ export function ServiceDiscovery() {
         </div>
 
         {/* Sorting & Availability Filter Bar */}
-        <div className="p-3.5 bg-slate-100/80 rounded-2xl flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="p-3 bg-slate-50/90 border border-slate-200/80 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-slate-500" />
             <span className="font-semibold text-slate-700">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-white border border-slate-300 text-slate-800 rounded-lg px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="bg-white border border-slate-200/90 text-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-subtle"
             >
-              <option value="fairmatch">✨ FairMatch (Balanced Workload + Proximity)</option>
+              <option value="fairmatch">⚡ FairMatch (Balanced Workload + Proximity)</option>
               <option value="rating">Highest Rated</option>
               <option value="experience">Most Experienced</option>
               <option value="price_asc">Price: Low to High</option>
@@ -223,7 +223,7 @@ export function ServiceDiscovery() {
             </select>
           </div>
 
-          <label className="flex items-center gap-2 font-medium text-slate-700 cursor-pointer">
+          <label className="flex items-center gap-2 font-medium text-slate-700 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={availableOnly}
@@ -306,8 +306,8 @@ export function ServiceDiscovery() {
             </div>
 
             {/* Requirement Description */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide">
+            <div className="space-y-1.5 text-left">
+              <label className="block text-xs font-semibold text-slate-700 tracking-wide uppercase">
                 Describe the problem / requirement *
               </label>
               <textarea
@@ -316,7 +316,7 @@ export function ServiceDiscovery() {
                 placeholder="e.g. Kitchen washbasin pipe is leaking; need replacement washer and check."
                 value={bookingRequirement}
                 onChange={(e) => setBookingRequirement(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-200/90 rounded-xl text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-subtle transition-all"
               />
             </div>
 
@@ -353,15 +353,15 @@ export function ServiceDiscovery() {
             />
 
             {/* Price Transparency Box */}
-            <div className="p-3 bg-blue-50/60 border border-blue-200/80 rounded-xl flex items-center justify-between text-xs">
-              <span className="text-slate-600 font-medium">Estimated Cooperative Standard Rate:</span>
-              <span className="font-extrabold text-slate-900 text-sm">
+            <div className="p-3.5 bg-brand-50/70 border border-brand-200/80 rounded-xl flex items-center justify-between text-xs">
+              <span className="text-slate-700 font-medium">Estimated Cooperative Base Rate:</span>
+              <span className="font-bold text-brand-900 text-sm">
                 {formatINR(activeWorkerForBooking.hourlyRate)}
               </span>
             </div>
 
             {/* Action Buttons */}
-            <div className="pt-2 flex items-center justify-end gap-2">
+            <div className="pt-2 flex items-center justify-end gap-2.5">
               <Button
                 type="button"
                 variant="outline"
@@ -374,7 +374,7 @@ export function ServiceDiscovery() {
                 type="submit"
                 variant="primary"
                 size="md"
-                className="font-bold shadow-sm"
+                className="font-bold"
                 isLoading={isSubmittingBooking}
               >
                 Confirm Service Request

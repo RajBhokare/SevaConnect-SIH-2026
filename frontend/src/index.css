@@ -3,13 +3,35 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
   body {
-    @apply bg-slate-50 text-slate-900 antialiased font-sans;
+    @apply bg-slate-50 text-slate-900 antialiased font-sans min-h-screen selection:bg-brand-100 selection:text-brand-900;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-slate-900 tracking-tight font-bold;
   }
 }
 
-/* Custom minimal scrollbar */
+@layer components {
+  /* Clean professional card */
+  .surface-card {
+    @apply bg-white border border-slate-200/80 rounded-2xl shadow-subtle hover:shadow-card transition-all duration-200;
+  }
+
+  /* Refined pill badge */
+  .pill-badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+}
+
+/* Custom modern minimal scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
