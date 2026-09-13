@@ -21,8 +21,8 @@ export const Select = React.forwardRef(({
         <select
           ref={ref}
           className={cn(
-            'w-full appearance-none px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors pr-10',
-            error && 'border-rose-500 focus:ring-rose-500 focus:border-rose-500',
+            'w-full appearance-none px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors pr-10',
+            error && 'border-danger-500 focus:ring-danger-500 focus:border-danger-500',
             className
           )}
           {...props}
@@ -39,7 +39,7 @@ export const Select = React.forwardRef(({
           <ChevronDown className="w-4 h-4" />
         </div>
       </div>
-      {error && <p className="text-xs text-rose-600 font-medium">{error}</p>}
+      {error && <p className="text-xs text-danger-600 font-medium">{error}</p>}
     </div>
   );
 });

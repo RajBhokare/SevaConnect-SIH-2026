@@ -9,13 +9,13 @@ export function Badge({
   ...props
 }) {
   const variants = {
-    default: 'bg-slate-100 text-slate-800 border-slate-200',
-    brand: 'bg-blue-50 text-blue-700 border-blue-200',
-    coop: 'bg-emerald-50 text-emerald-700 border-emerald-200 font-medium',
-    success: 'bg-green-50 text-green-700 border-green-200',
-    warning: 'bg-amber-50 text-amber-700 border-amber-200',
-    danger: 'bg-rose-50 text-rose-700 border-rose-200',
-    purple: 'bg-purple-50 text-purple-700 border-purple-200',
+    default: 'bg-slate-100 text-slate-700 border-slate-200',
+    primary: 'bg-primary-50 text-primary-800 border-primary-200',
+    brand: 'bg-primary-50 text-primary-800 border-primary-200',
+    accent: 'bg-accent-50 text-accent-900 border-accent-300 font-semibold',
+    success: 'bg-success-50 text-success-800 border-success-200 font-medium',
+    coop: 'bg-success-50 text-success-800 border-success-200 font-medium',
+    danger: 'bg-danger-50 text-danger-800 border-danger-200 font-medium',
     outline: 'bg-transparent border-slate-300 text-slate-700'
   };
 
@@ -23,7 +23,7 @@ export function Badge({
     <span
       className={cn(
         'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border transition-colors',
-        variants[variant],
+        variants[variant] || variants.default,
         className
       )}
       {...props}

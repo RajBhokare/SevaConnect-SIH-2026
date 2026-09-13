@@ -7,29 +7,77 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#f0f7ff',
-          100: '#e0effe',
-          200: '#bae0fd',
-          300: '#7cc7fb',
-          400: '#38a9f8',
-          500: '#0e8ce9',
-          600: '#0270c7', // Primary Civic & Cooperative Blue
-          700: '#0359a1',
-          800: '#074c85',
-          900: '#0c406e',
-          950: '#082849',
+        // 1. Primary: Deep Trust-Blue (#0F3D5C)
+        primary: {
+          50: '#f0f6fa',
+          100: '#e1edf4',
+          200: '#c2dbe8',
+          300: '#94bfd6',
+          400: '#5c98bd',
+          500: '#0F3D5C',
+          600: '#0d3550',
+          700: '#0a2a40',
+          800: '#082030',
+          900: '#051520',
+          DEFAULT: '#0F3D5C',
         },
-        coop: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          500: '#22c55e',
-          600: '#16a34a', // Cooperative Green
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
+        // 2. Accent: Warm Gold (#C9973B) - Reserved only for top-tier badge & single hero highlight
+        accent: {
+          50: '#fbf7ee',
+          100: '#f7edd7',
+          200: '#eedcb0',
+          300: '#e2c37e',
+          400: '#d7ab53',
+          500: '#C9973B',
+          600: '#b4832f',
+          700: '#956823',
+          800: '#734d1b',
+          900: '#4d300f',
+          DEFAULT: '#C9973B',
         },
+        // 3. Success: Cooperative Green (#1E8A6E) - Verified & completed states only
+        success: {
+          50: '#eff9f6',
+          100: '#daf2eb',
+          200: '#b5e5d7',
+          300: '#83d2be',
+          400: '#4ebd9f',
+          500: '#1E8A6E',
+          600: '#17735b',
+          700: '#135c49',
+          800: '#10493b',
+          900: '#0c382e',
+          DEFAULT: '#1E8A6E',
+        },
+        // 4. Danger: Emergency / Urgent Red (#DC2626)
+        danger: {
+          50: '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          500: '#ef4444',
+          600: '#DC2626',
+          700: '#b91c1c',
+          800: '#991b1b',
+          900: '#7f1d1d',
+          DEFAULT: '#DC2626',
+        },
+        // 5. AI: Subtle Violet (#7C3AED) - Used strictly for AI Ops, Forecast & Allocation
+        ai: {
+          50: '#f5f3ff',
+          100: '#ede9fe',
+          200: '#ddd6fe',
+          300: '#c4b5fd',
+          400: '#a78bfa',
+          500: '#7c3aed',
+          600: '#6d28d9',
+          700: '#5b21b6',
+          800: '#4c1d95',
+          900: '#2e1065',
+          DEFAULT: '#7c3aed',
+        },
+        // 5. Neutral: Slate Scale
         slate: {
           50: '#f8fafc',
           100: '#f1f5f9',

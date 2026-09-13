@@ -147,9 +147,9 @@ export function AiOperations() {
   };
 
   const getDemandColor = (level) => {
-    if (level === 'HIGH') return 'bg-rose-50 border-rose-200 text-rose-800';
-    if (level === 'MEDIUM') return 'bg-amber-50 border-amber-200 text-amber-800';
-    return 'bg-emerald-50 border-emerald-200 text-emerald-800';
+    if (level === 'HIGH') return 'bg-danger-50 border-danger-200 text-danger-800';
+    if (level === 'MEDIUM') return 'bg-slate-100 border-slate-200 text-slate-800';
+    return 'bg-success-50 border-success-200 text-success-800';
   };
 
   const distribution = rankingData?.distribution || {
@@ -164,18 +164,18 @@ export function AiOperations() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-left">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-bold border border-purple-400/30">
+      <div className="bg-primary-900 border border-primary-800 text-white p-6 sm:p-8 rounded-3xl shadow-xl space-y-3">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 text-slate-200 rounded-full text-xs font-bold border border-white/20">
           <Sparkles className="w-4 h-4" />
           Cooperative Workforce Intelligence • PS 26089
         </div>
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
           Cooperative Workforce Intelligence & Demand Forecasting
         </h1>
-        <p className="text-xs sm:text-sm text-purple-200 leading-relaxed max-w-3xl">
+        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-3xl">
           Locality-level demand forecasting, fair workforce allocation recommendations, and multi-factor quality intelligence for cooperative federation planning.
         </p>
-        <p className="text-[11px] text-purple-300/80 bg-white/10 px-3 py-1.5 rounded-xl border border-white/15 inline-block">
+        <p className="text-[11px] text-slate-300 bg-white/10 px-3 py-1.5 rounded-xl border border-white/15 inline-block">
           💡 <strong>Principle:</strong> AI supports aggregate cooperative capacity planning. Individual job opportunities are assigned transparently via FairMatch.
         </p>
 
@@ -185,7 +185,7 @@ export function AiOperations() {
             onClick={() => setActiveView('RANKING')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeView === 'RANKING'
-                ? 'bg-white text-purple-900 shadow-sm'
+                ? 'bg-white text-primary-900 shadow-xs'
                 : 'bg-white/10 text-white hover:bg-white/20'
             }`}
           >
@@ -195,7 +195,7 @@ export function AiOperations() {
             onClick={() => setActiveView('DEMAND')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeView === 'DEMAND'
-                ? 'bg-white text-purple-900 shadow-sm'
+                ? 'bg-white text-primary-900 shadow-xs'
                 : 'bg-white/10 text-white hover:bg-white/20'
             }`}
           >
@@ -207,41 +207,41 @@ export function AiOperations() {
       {activeView === 'RANKING' ? (
         /* PROVIDER RANKING & PERFORMANCE AUDIT TAB */
         <div className="space-y-6">
-          {/* Top Metric Strip: Tier Distribution */}
+          {/* Top Metric Strip: Tier Distribution using single consistent scale */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="p-4 bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 rounded-2xl text-center space-y-1">
+            <div className="p-4 bg-slate-100 border border-slate-300 rounded-2xl text-center space-y-1">
               <span className="text-xl">💠</span>
-              <p className="text-[10px] font-bold text-blue-900 uppercase">Diamond</p>
-              <p className="text-xl font-black text-blue-950">{distribution.Diamond || 0}</p>
-              <p className="text-[9px] text-blue-700 font-medium">90–100 Score</p>
+              <p className="text-[10px] font-bold text-slate-900 uppercase">Diamond</p>
+              <p className="text-xl font-black text-slate-950">{distribution.Diamond || 0}</p>
+              <p className="text-[9px] text-slate-600 font-medium">90–100 Score</p>
             </div>
 
-            <div className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl text-center space-y-1">
+            <div className="p-4 bg-slate-100 border border-slate-300 rounded-2xl text-center space-y-1">
               <span className="text-xl">💎</span>
-              <p className="text-[10px] font-bold text-purple-900 uppercase">Platinum</p>
-              <p className="text-xl font-black text-purple-950">{distribution.Platinum || 0}</p>
-              <p className="text-[9px] text-purple-700 font-medium">75–89 Score</p>
+              <p className="text-[10px] font-bold text-slate-900 uppercase">Platinum</p>
+              <p className="text-xl font-black text-slate-950">{distribution.Platinum || 0}</p>
+              <p className="text-[9px] text-slate-600 font-medium">75–89 Score</p>
             </div>
 
-            <div className="p-4 bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl text-center space-y-1">
+            <div className="p-4 bg-slate-100 border border-slate-300 rounded-2xl text-center space-y-1">
               <span className="text-xl">🥇</span>
-              <p className="text-[10px] font-bold text-amber-900 uppercase">Gold</p>
-              <p className="text-xl font-black text-amber-950">{distribution.Gold || 0}</p>
-              <p className="text-[9px] text-amber-700 font-medium">60–74 Score</p>
+              <p className="text-[10px] font-bold text-slate-900 uppercase">Gold</p>
+              <p className="text-xl font-black text-slate-950">{distribution.Gold || 0}</p>
+              <p className="text-[9px] text-slate-600 font-medium">60–74 Score</p>
             </div>
 
-            <div className="p-4 bg-gradient-to-br from-slate-50 to-zinc-50 border border-slate-300 rounded-2xl text-center space-y-1">
+            <div className="p-4 bg-slate-100 border border-slate-300 rounded-2xl text-center space-y-1">
               <span className="text-xl">🥈</span>
               <p className="text-[10px] font-bold text-slate-800 uppercase">Silver</p>
               <p className="text-xl font-black text-slate-900">{distribution.Silver || 0}</p>
               <p className="text-[9px] text-slate-600 font-medium">40–59 Score</p>
             </div>
 
-            <div className="p-4 bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-2xl text-center space-y-1">
+            <div className="p-4 bg-slate-100 border border-slate-200 rounded-2xl text-center space-y-1">
               <span className="text-xl">🥉</span>
-              <p className="text-[10px] font-bold text-orange-900 uppercase">Bronze</p>
-              <p className="text-xl font-black text-orange-950">{distribution.Bronze || 0}</p>
-              <p className="text-[9px] text-orange-700 font-medium">0–39 Score</p>
+              <p className="text-[10px] font-bold text-slate-700 uppercase">Bronze</p>
+              <p className="text-xl font-black text-slate-800">{distribution.Bronze || 0}</p>
+              <p className="text-[9px] text-slate-500 font-medium">0–39 Score</p>
             </div>
 
             <div className="p-4 bg-slate-100 border border-slate-200 rounded-2xl text-center space-y-1">
@@ -253,11 +253,11 @@ export function AiOperations() {
           </div>
 
           {/* Leaderboard Table Card */}
-          <Card className="border-slate-200 shadow-sm overflow-hidden">
+          <Card className="border-slate-200 shadow-xs overflow-hidden">
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div>
                 <CardTitle className="text-base flex items-center gap-2">
-                  <Award className="w-5 h-5 text-brand-600" />
+                  <Award className="w-5 h-5 text-primary-700" />
                   Cooperative Quality Leaderboard & Sentiment Audit
                 </CardTitle>
                 <p className="text-xs text-slate-500 mt-0.5">
@@ -270,7 +270,7 @@ export function AiOperations() {
                 size="sm"
                 onClick={handleRecalculateAll}
                 disabled={recalculating}
-                className="font-bold border-purple-300 text-purple-900 hover:bg-purple-50 self-start sm:self-auto"
+                className="font-bold border-slate-300 text-slate-800 hover:bg-slate-50 self-start sm:self-auto"
               >
                 <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${recalculating ? 'animate-spin' : ''}`} />
                 Recalculate All AI Rankings
@@ -294,7 +294,7 @@ export function AiOperations() {
                   {Array.isArray(rankingData?.leaderboard) && rankingData.leaderboard.map((worker) => (
                     <tr key={worker._id} className="hover:bg-slate-50/80 transition-colors">
                       <td className="p-4 font-bold text-slate-900 flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-xs">
+                        <div className="w-8 h-8 rounded-xl bg-primary-700 text-white flex items-center justify-center font-bold text-xs">
                           {(worker.name || 'Worker').split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2)}
                         </div>
                         <div>
@@ -317,14 +317,14 @@ export function AiOperations() {
                         <span className="text-[10px] text-slate-400 font-medium">/100</span>
                       </td>
                       <td className="p-4 text-slate-700">
-                        <span className="font-bold text-amber-900">⭐ {worker.rating?.toFixed(1) || '4.8'}</span>
+                        <span className="font-bold text-slate-900">⭐ {worker.rating?.toFixed(1) || '4.8'}</span>
                         <span className="text-[10px] text-slate-400 block font-normal">
                           {worker.reviewCount || 0} reviews • {worker.completedJobs || 0} gigs
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="inline-flex items-center gap-1 font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span className="inline-flex items-center gap-1 font-bold text-success-800 bg-success-50 px-2 py-0.5 rounded-md border border-success-200">
+                          <CheckCircle2 className="w-3 h-3 text-success-600" />
                           {worker.positiveFeedbackPercentage || 100}%
                         </span>
                       </td>
@@ -347,10 +347,10 @@ export function AiOperations() {
       ) : (
         /* DEMAND FORECASTING TAB */
         <div className="space-y-6">
-          <Card className="border-slate-200 shadow-sm">
+          <Card className="border-slate-200 shadow-xs">
             <CardContent className="p-6">
               <h3 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <Cpu className="w-4 h-4 text-purple-600" />
+                <Cpu className="w-4 h-4 text-primary-700" />
                 Operational Forecast Parameters
               </h3>
 
@@ -390,12 +390,12 @@ export function AiOperations() {
                 />
 
                 <div className="flex flex-col justify-center pt-3">
-                  <label className="flex items-center gap-2 text-xs font-bold text-rose-800 cursor-pointer bg-rose-50 p-2.5 rounded-xl border border-rose-200">
+                  <label className="flex items-center gap-2 text-xs font-bold text-danger-800 cursor-pointer bg-danger-50 p-2.5 rounded-xl border border-danger-200">
                     <input
                       type="checkbox"
                       checked={isEmergencySurge}
                       onChange={(e) => setIsEmergencySurge(e.target.checked)}
-                      className="rounded text-rose-600 focus:ring-rose-500 w-4 h-4"
+                      className="rounded text-danger-600 focus:ring-danger-500 w-4 h-4"
                     />
                     Simulate Emergency Surge
                   </label>
@@ -405,11 +405,11 @@ export function AiOperations() {
           </Card>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="border-slate-200 shadow-sm">
+            <Card className="border-slate-200 shadow-xs">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between text-base">
                   <span className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-brand-600" />
+                    <TrendingUp className="w-5 h-5 text-primary-700" />
                     Predicted Locality Demand
                   </span>
                   {forecastResult && (
@@ -439,13 +439,13 @@ export function AiOperations() {
                       </div>
                       <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                         <p className="text-[10px] text-slate-500 font-semibold uppercase">Emergency Rate</p>
-                        <p className="text-lg font-black text-rose-700 mt-0.5">
+                        <p className="text-lg font-black text-danger-700 mt-0.5">
                           {forecastResult.expected_emergency_rate} SOS
                         </p>
                       </div>
                       <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                         <p className="text-[10px] text-slate-500 font-semibold uppercase">Model Confidence</p>
-                        <p className="text-lg font-black text-emerald-700 mt-0.5">
+                        <p className="text-lg font-black text-success-700 mt-0.5">
                           {Math.round(forecastResult.confidence_score * 100)}%
                         </p>
                       </div>
@@ -455,14 +455,14 @@ export function AiOperations() {
               </CardContent>
             </Card>
 
-            <Card className="border-slate-200 shadow-sm">
+            <Card className="border-slate-200 shadow-xs">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between text-base">
                   <span className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-emerald-600" />
+                    <Users className="w-5 h-5 text-success-600" />
                     Cooperative Workforce Allocation
                   </span>
-                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                  <span className="text-xs font-bold text-success-800 bg-success-50 px-2.5 py-1 rounded-full border border-success-200">
                     Fairness Index: 98.4%
                   </span>
                 </CardTitle>
@@ -470,20 +470,20 @@ export function AiOperations() {
               <CardContent className="space-y-4">
                 {allocationResult && (
                   <>
-                    <p className="text-xs text-slate-600 leading-relaxed bg-emerald-50/50 p-3.5 rounded-2xl border border-emerald-100">
+                    <p className="text-xs text-slate-600 leading-relaxed bg-success-50/50 p-3.5 rounded-2xl border border-success-100">
                       {allocationResult.plain_explanation}
                     </p>
 
                     <div className="grid grid-cols-2 gap-3 text-center">
                       <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                         <p className="text-[10px] text-slate-500 font-semibold uppercase">Primary Active Roster</p>
-                        <p className="text-lg font-black text-emerald-800 mt-0.5">
+                        <p className="text-lg font-black text-success-800 mt-0.5">
                           {allocationResult.recommended_active_workers} Artisans
                         </p>
                       </div>
                       <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                         <p className="text-[10px] text-slate-500 font-semibold uppercase">Standby Buffer</p>
-                        <p className="text-lg font-black text-purple-800 mt-0.5">
+                        <p className="text-lg font-black text-slate-800 mt-0.5">
                           {allocationResult.suggested_standby_buffer} Artisans
                         </p>
                       </div>
@@ -497,8 +497,8 @@ export function AiOperations() {
       )}
 
       {/* Principles Disclaimer */}
-      <div className="p-4 bg-purple-50 rounded-2xl border border-purple-200 text-xs text-purple-900 flex items-start gap-2.5">
-        <ShieldCheck className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+      <div className="p-4 bg-slate-100 rounded-2xl border border-slate-200 text-xs text-slate-800 flex items-start gap-2.5">
+        <ShieldCheck className="w-5 h-5 text-primary-700 flex-shrink-0 mt-0.5" />
         <span>
           <strong>Ethical AI Guardrail:</strong> SevaConnect's AI service assists cooperative operational planning and transparent quality feedback only. The system never forcibly assigns, fines, or penalizes independent workers, protecting artisan autonomy.
         </span>

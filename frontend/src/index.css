@@ -10,8 +10,13 @@
   }
   
   body {
-    @apply bg-slate-50 text-slate-900 antialiased font-sans min-h-screen selection:bg-brand-100 selection:text-brand-900;
+    @apply bg-slate-50 text-slate-900 antialiased font-sans min-h-screen;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background-color: #e1edf4;
+    color: #051520;
   }
 
   h1, h2, h3, h4, h5, h6 {

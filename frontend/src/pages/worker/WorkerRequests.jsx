@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { bookingApi } from '../../services/api';
 import { BookingCard } from '../../components/BookingCard';
+import { DigitalInvoice } from '../../components/DigitalInvoice';
 import { ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
-import { Clock, CheckCircle2, Play, AlertCircle } from 'lucide-react';
+import { Clock, CheckCircle2 } from 'lucide-react';
 
 export function WorkerRequests() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('PENDING');
+  const [selectedInvoiceBooking, setSelectedInvoiceBooking] = useState(null);
 
   useEffect(() => {
     fetchBookings();
@@ -111,7 +113,7 @@ export function WorkerRequests() {
 
       {loading ? (
         <div className="text-center py-20">
-          <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-8 h-8 border-3 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p className="text-xs text-slate-500">Loading service requests...</p>
         </div>
       ) : !Array.isArray(filteredBookings) || filteredBookings.length === 0 ? (
@@ -128,14 +130,22 @@ export function WorkerRequests() {
             <BookingCard
               key={bk._id}
               booking={bk}
-              isWorkerView={true}
+              userRole="WORKER"
               onAccept={handleAccept}
               onDecline={handleDecline}
               onStartService={handleStartService}
               onCompleteService={handleCompleteService}
+              onViewInvoice={(bk) => setSelectedInvoiceBooking(bk)}
             />
           ))}
         </div>
+      )}
+
+      {selectedInvoiceBooking && (
+        <DigitalInvoice
+          booking={selectedInvoiceBooking}
+          onClose={() => setSelectedInvoiceBooking(null)}
+        />
       )}
     </div>
   );

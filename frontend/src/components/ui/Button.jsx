@@ -15,13 +15,15 @@ export const Button = React.forwardRef(({
   const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-150 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2';
 
   const variants = {
-    primary: 'bg-brand-600 hover:bg-brand-700 text-white shadow-subtle hover:shadow-card focus:ring-brand-500 font-semibold',
-    secondary: 'bg-slate-100 hover:bg-slate-200/80 text-slate-800 border border-slate-200/60 focus:ring-slate-400 font-medium',
-    coop: 'bg-coop-600 hover:bg-coop-700 text-white shadow-subtle hover:shadow-card focus:ring-coop-500 font-semibold',
-    outline: 'border border-slate-300/90 bg-white hover:bg-slate-50/80 text-slate-700 hover:text-slate-900 shadow-subtle focus:ring-brand-500 font-medium',
+    primary: 'bg-primary-500 hover:bg-primary-600 text-white shadow-subtle hover:shadow-card focus:ring-primary-500 font-semibold',
+    secondary: 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 focus:ring-slate-400 font-medium',
+    coop: 'bg-success-500 hover:bg-success-600 text-white shadow-subtle hover:shadow-card focus:ring-success-500 font-semibold',
+    success: 'bg-success-500 hover:bg-success-600 text-white shadow-subtle hover:shadow-card focus:ring-success-500 font-semibold',
+    outline: 'border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 shadow-subtle focus:ring-primary-500 font-medium',
     ghost: 'hover:bg-slate-100 text-slate-600 hover:text-slate-900 focus:ring-slate-400 font-medium',
-    danger: 'bg-rose-600 hover:bg-rose-700 text-white shadow-subtle focus:ring-rose-500 font-semibold',
-    emergency: 'bg-red-600 hover:bg-red-700 text-white font-bold shadow-subtle focus:ring-red-500'
+    danger: 'bg-danger-600 hover:bg-danger-700 text-white shadow-subtle focus:ring-danger-500 font-semibold',
+    emergency: 'bg-danger-600 hover:bg-danger-700 text-white font-bold shadow-subtle focus:ring-danger-500',
+    ai: 'bg-ai-600 hover:bg-ai-700 text-white shadow-subtle focus:ring-ai-500 font-semibold'
   };
 
   const sizes = {

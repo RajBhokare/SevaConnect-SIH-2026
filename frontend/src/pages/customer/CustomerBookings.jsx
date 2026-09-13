@@ -2,18 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { bookingApi, paymentApi, ratingApi } from '../../services/api';
 import { BookingCard } from '../../components/BookingCard';
+import { DigitalInvoice } from '../../components/DigitalInvoice';
 import { Modal } from '../../components/ui/Modal';
 import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
 import { formatINR, ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
   CalendarCheck,
   CreditCard,
   Star,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
   QrCode,
   Banknote,
   ShieldCheck
@@ -24,6 +21,7 @@ export function CustomerBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('ALL');
+  const [selectedInvoiceBooking, setSelectedInvoiceBooking] = useState(null);
 
   // Payment Modal State
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
@@ -157,7 +155,7 @@ export function CustomerBookings() {
 
       {loading ? (
         <div className="text-center py-20">
-          <div className="w-8 h-8 border-3 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-8 h-8 border-3 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p className="text-xs text-slate-500">Loading bookings history...</p>
         </div>
       ) : !Array.isArray(filteredBookings) || filteredBookings.length === 0 ? (
@@ -178,6 +176,7 @@ export function CustomerBookings() {
               onCancel={handleCancelBooking}
               onPay={handleOpenPayment}
               onRate={handleOpenRating}
+              onViewInvoice={(bk) => setSelectedInvoiceBooking(bk)}
             />
           ))}
         </div>
@@ -240,8 +239,8 @@ export function CustomerBookings() {
               </div>
             </div>
 
-            <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-200/80 text-[11px] text-blue-900 flex items-start gap-2">
-              <ShieldCheck className="w-4 h-4 text-brand-600 flex-shrink-0 mt-0.5" />
+            <div className="p-3 bg-primary-50 rounded-xl border border-primary-200 text-[11px] text-primary-900 flex items-start gap-2">
+              <ShieldCheck className="w-4 h-4 text-primary-700 flex-shrink-0 mt-0.5" />
               <span>
                 Simulated settlement: Funds are credited directly to the cooperative worker's ledger with automated insurance contribution deductions.
               </span>
@@ -315,7 +314,7 @@ export function CustomerBookings() {
                 placeholder="Share your experience to help fellow community members..."
                 value={ratingComment}
                 onChange={(e) => setRatingComment(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
 
@@ -341,6 +340,14 @@ export function CustomerBookings() {
           </form>
         )}
       </Modal>
+
+      {/* Digital Invoice Modal */}
+      {selectedInvoiceBooking && (
+        <DigitalInvoice
+          booking={selectedInvoiceBooking}
+          onClose={() => setSelectedInvoiceBooking(null)}
+        />
+      )}
     </div>
   );
 }

@@ -5,9 +5,7 @@ import {
   CheckCircle2, 
   PlayCircle, 
   XCircle, 
-  AlertTriangle, 
-  ShieldCheck, 
-  CreditCard 
+  ShieldCheck
 } from 'lucide-react';
 
 export function StatusBadge({ status, className }) {
@@ -17,19 +15,19 @@ export function StatusBadge({ status, className }) {
   switch (s) {
     case 'REQUESTED':
       return (
-        <Badge variant="warning" icon={Clock} className={className}>
+        <Badge variant="default" icon={Clock} className={className}>
           Requested
         </Badge>
       );
     case 'ACCEPTED':
       return (
-        <Badge variant="brand" icon={CheckCircle2} className={className}>
+        <Badge variant="primary" icon={CheckCircle2} className={className}>
           Accepted
         </Badge>
       );
     case 'IN_PROGRESS':
       return (
-        <Badge variant="purple" icon={PlayCircle} className={className}>
+        <Badge variant="primary" icon={PlayCircle} className={className}>
           In Progress
         </Badge>
       );
@@ -53,29 +51,16 @@ export function StatusBadge({ status, className }) {
       );
     case 'VERIFIED':
       return (
-        <Badge variant="coop" icon={ShieldCheck} className={className}>
+        <Badge variant="success" icon={ShieldCheck} className={className}>
           Verified Worker
         </Badge>
       );
     case 'PENDING':
-      return (
-        <Badge variant="warning" icon={Clock} className={className}>
-          Verification Pending
-        </Badge>
-      );
-    case 'PAID':
-      return (
-        <Badge variant="success" icon={CreditCard} className={className}>
-          Paid
-        </Badge>
-      );
-    case 'CASH_ON_SERVICE':
-      return (
-        <Badge variant="outline" icon={CreditCard} className={className}>
-          Cash on Service
-        </Badge>
-      );
     default:
-      return <Badge className={className}>{status}</Badge>;
+      return (
+        <Badge variant="default" icon={Clock} className={className}>
+          {status}
+        </Badge>
+      );
   }
 }

@@ -97,7 +97,7 @@ export function WorkerProfile() {
   if (loading) {
     return (
       <div className="text-center py-20">
-        <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <div className="w-8 h-8 border-3 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-xs text-slate-500">Loading profile data...</p>
       </div>
     );
@@ -115,21 +115,21 @@ export function WorkerProfile() {
       </div>
 
       {/* Verification & Cooperative Status Strip */}
-      <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="p-4 bg-success-50 rounded-2xl border border-success-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-success-600 text-white flex items-center justify-center">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold text-emerald-950">
+              <h3 className="text-sm font-bold text-success-900">
                 KYC Verification Status: VERIFIED
               </h3>
-              <span className="px-2 py-0.5 bg-emerald-200 text-emerald-900 text-[10px] font-extrabold rounded-md uppercase">
+              <span className="px-2 py-0.5 bg-success-200 text-success-900 text-[10px] font-extrabold rounded-md uppercase">
                 Active
               </span>
             </div>
-            <p className="text-xs text-emerald-800">
+            <p className="text-xs text-success-800">
               Cooperative: {worker?.cooperativeName || 'Maharashtra Shramik Swavalamban Cooperative'} (Member #{worker?.cooperativeMemberId || 'MSSC-4092'})
             </p>
           </div>

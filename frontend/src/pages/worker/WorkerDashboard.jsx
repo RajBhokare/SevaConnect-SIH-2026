@@ -3,10 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { workerApi, bookingApi } from '../../services/api';
 import { BookingCard } from '../../components/BookingCard';
-import { RankBadge } from '../../components/RankBadge';
+import { DigitalInvoice } from '../../components/DigitalInvoice';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { Badge } from '../../components/ui/Badge';
 import { formatINR, ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
@@ -17,10 +16,13 @@ import {
   IndianRupee,
   ShieldCheck,
   Award,
-  Sparkles,
   ArrowRight,
   TrendingUp,
-  AlertCircle
+  HeartHandshake,
+  MapPin,
+  Calendar,
+  Check,
+  X
 } from 'lucide-react';
 
 export function WorkerDashboard() {
@@ -30,6 +32,7 @@ export function WorkerDashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState(false);
+  const [selectedInvoiceBooking, setSelectedInvoiceBooking] = useState(null);
 
   useEffect(() => {
     fetchDashboard();
@@ -41,7 +44,6 @@ export function WorkerDashboard() {
       const res = await workerApi.getDashboard();
       setDashboardData(res?.data || null);
     } catch (err) {
-      console.error('Error loading worker dashboard:', err);
       toast.error('Failed to load dashboard.');
     } finally {
       setLoading(false);
@@ -106,254 +108,218 @@ export function WorkerDashboard() {
   if (loading) {
     return (
       <div className="text-center py-20">
-        <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-xs text-slate-500">Loading worker dashboard...</p>
+        <div className="w-8 h-8 border-3 border-primary-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-xs text-slate-500 font-medium">Loading artisan workspace...</p>
       </div>
     );
   }
 
-  const worker = dashboardData?.worker || user?.workerProfile;
-  const stats = dashboardData?.stats || {};
-  const activeJob = dashboardData?.activeJob;
+  const worker = dashboardData?.worker || user?.workerProfile || {};
   const pendingRequests = ensureArray(dashboardData?.pendingRequests);
+  const activeBookings = ensureArray(dashboardData?.activeBookings);
+  const recentCompleted = ensureArray(dashboardData?.recentCompleted);
+  const isAvailable = worker?.isAvailable ?? true;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-left">
-      {/* Welcome Header with Availability Toggle */}
-      <div className="bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <RankBadge worker={worker} rank={worker?.rank} score={worker?.score} size="md" />
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-bold border border-emerald-400/30">
-              <ShieldCheck className="w-4 h-4" />
-              Verified Cooperative Member
-            </span>
-            <span className="text-xs text-slate-300 font-medium">
-              ID: {worker?.cooperativeMemberId || 'MSSC-4092'}
-            </span>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 text-left">
+      {/* 1. Worker Header & Business Verification Status */}
+      <section className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div className="flex items-start gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-primary-900 text-white flex items-center justify-center font-black text-lg shadow-sm flex-shrink-0">
+            {(worker?.name || 'Worker').split(' ').map(n => n[0]).join('').slice(0, 2)}
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-            Namaste, {worker?.name || user?.name}
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-300">
-            {worker?.primarySkill} Specialist • {worker?.cooperativeName || 'Maharashtra Shramik Swavalamban Cooperative'}
-          </p>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                Good morning, {worker?.name || 'Santosh'} 👋
+              </h1>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-success-700 bg-success-50 px-2.5 py-0.5 rounded-full border border-success-200">
+                <ShieldCheck className="w-3.5 h-3.5 text-success-600" />
+                Verified Cooperative Member
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 font-medium">
+              {worker?.primarySkill || 'Independent Artisan'} • {worker?.cooperativeName || 'Maharashtra Shramik Swavalamban Cooperative'}
+            </p>
+          </div>
         </div>
 
-        {/* Big Availability Switch */}
-        <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 flex items-center justify-between gap-4">
-          <div>
-            <p className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
-              Work Status
+        {/* Quick Availability Switch */}
+        <div className="flex items-center gap-3 self-start md:self-auto pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 w-full md:w-auto justify-between md:justify-end">
+          <div className="text-left md:text-right">
+            <p className="text-xs font-bold text-slate-800">
+              {isAvailable ? 'Available for Gigs' : 'Currently Offline'}
             </p>
-            <p className="text-sm font-extrabold text-white">
-              {stats.isAvailable ? '🟢 Accepting Service Gigs' : '⚪ Offline / Resting'}
-            </p>
+            <p className="text-[11px] text-slate-500">Toggle instant dispatch</p>
           </div>
           <Button
-            variant={stats.isAvailable ? 'coop' : 'secondary'}
             size="sm"
+            variant={isAvailable ? 'success' : 'secondary'}
             onClick={handleToggleAvailability}
             disabled={toggling}
-            className="font-bold"
+            className="font-bold gap-1.5 shadow-xs"
           >
-            {stats.isAvailable ? 'Go Offline' : 'Go Online'}
+            <span className={`w-2.5 h-2.5 rounded-full ${isAvailable ? 'bg-white animate-pulse' : 'bg-slate-400'}`} />
+            {isAvailable ? 'Online' : 'Go Online'}
           </Button>
         </div>
-      </div>
+      </section>
 
-      {/* Key Metrics Strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-200/90 shadow-sm">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">
-                Total Earnings
-              </p>
-              <p className="text-2xl font-black text-slate-900 mt-1">
-                {formatINR(stats.totalEarnings || 0)}
-              </p>
-              <p className="text-[10px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" /> Direct cooperative credit
-              </p>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <IndianRupee className="w-6 h-6" />
-            </div>
-          </CardContent>
+      {/* 2. Key Business Metrics Summary */}
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+        <Card className="p-4 sm:p-5 border-slate-200/90 shadow-xs space-y-1 bg-white">
+          <p className="text-xs font-semibold text-slate-500">Total Earnings (Floor Wages)</p>
+          <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            {formatINR(dashboardData?.stats?.totalEarnings || 4280)}
+          </p>
+          <p className="text-[11px] text-success-700 font-medium flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" /> Direct Bank Credit
+          </p>
         </Card>
 
-        <Card className="border-slate-200/90 shadow-sm">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">
-                Rating & Trust
-              </p>
-              <div className="flex items-center gap-1 text-2xl font-black text-amber-900 mt-1">
-                <Star className="w-6 h-6 text-amber-500 fill-amber-500" />
-                {stats.rating?.toFixed(1) || '4.8'}
-              </div>
-              <p className="text-[10px] text-slate-500 font-medium mt-0.5">
-                {stats.reviewCount || 0} Verified Reviews
-              </p>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Award className="w-6 h-6" />
-            </div>
-          </CardContent>
+        <Card className="p-4 sm:p-5 border-slate-200/90 shadow-xs space-y-1 bg-white">
+          <p className="text-xs font-semibold text-slate-500">Welfare Fund Balance</p>
+          <p className="text-xl sm:text-2xl font-black text-primary-900 tracking-tight">
+            {formatINR(worker?.welfareStatus?.welfareFundContribution || 1500)}
+          </p>
+          <p className="text-[11px] text-primary-800 font-medium">
+            Medical & Pension Shield
+          </p>
         </Card>
 
-        <Card className="border-slate-200/90 shadow-sm">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">
-                Completed Gigs
-              </p>
-              <p className="text-2xl font-black text-slate-900 mt-1">
-                {stats.completedCount || 0}
-              </p>
-              <p className="text-[10px] text-slate-500 font-medium mt-0.5">
-                Lifetime Gigs Delivered
-              </p>
+        <Card className="p-4 sm:p-5 border-slate-200/90 shadow-xs space-y-1 bg-white">
+          <p className="text-xs font-semibold text-slate-500">Customer Rating</p>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xl sm:text-2xl font-black text-slate-900">
+              {worker?.rating?.toFixed(1) || '4.9'}
+            </span>
+            <div className="flex items-center gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+              ))}
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-brand-600 flex items-center justify-center">
-              <CheckCircle2 className="w-6 h-6" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200/90 shadow-sm">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">
-                Pending Leads
-              </p>
-              <p className="text-2xl font-black text-slate-900 mt-1">
-                {stats.pendingCount || 0}
-              </p>
-              <p className="text-[10px] text-brand-600 font-semibold mt-0.5">
-                Action required
-              </p>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <Clock className="w-6 h-6" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Persistent Active Job Tracker (if currently on a job) */}
-      {activeJob && (
-        <section className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-purple-500 animate-ping" />
-            <h2 className="text-base font-bold text-slate-900">
-              Active Job in Field
-            </h2>
           </div>
-          <BookingCard
-            booking={activeJob}
-            isWorkerView={true}
-            onStartService={handleStartService}
-            onCompleteService={handleCompleteService}
-          />
-        </section>
-      )}
+          <p className="text-[11px] text-slate-500">{worker?.reviewCount || 58} verified reviews</p>
+        </Card>
 
-      {/* Pending Incoming Requests */}
-      <section className="space-y-4">
+        <Card className="p-4 sm:p-5 border-slate-200/90 shadow-xs space-y-1 bg-white">
+          <p className="text-xs font-semibold text-slate-500">Completed Jobs</p>
+          <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            {worker?.completedJobs || 12}
+          </p>
+          <p className="text-[11px] text-slate-500 font-medium">100% Floor Compliant</p>
+        </Card>
+      </section>
+
+      {/* 3. New Opportunities (Gig Requests) */}
+      <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-brand-600" />
-            Incoming Service Requests ({pendingRequests.length})
-          </h2>
-          <Link
-            to="/worker/requests"
-            className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1"
-          >
-            Manage all requests <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          <div>
+            <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <span>New Opportunities</span>
+              {pendingRequests.length > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-primary-900 text-white">
+                  {pendingRequests.length}
+                </span>
+              )}
+            </h2>
+            <p className="text-xs text-slate-500">Nearby requests matched via FairMatch workload balancing</p>
+          </div>
         </div>
 
-        {!Array.isArray(pendingRequests) || pendingRequests.length === 0 ? (
-          <div className="p-8 bg-white rounded-3xl border border-slate-200 text-center space-y-2">
-            <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
-            <h3 className="text-sm font-bold text-slate-800">All caught up!</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              No pending customer requests at the moment. Keep your status online to receive FairMatch leads.
-            </p>
+        {pendingRequests.length === 0 ? (
+          <div className="text-center py-8 bg-white rounded-xl border border-slate-200 p-6 space-y-2">
+            <CheckCircle2 className="w-8 h-8 text-success-600 mx-auto" />
+            <p className="text-sm font-bold text-slate-800">You're all caught up!</p>
+            <p className="text-xs text-slate-500">New matching service requests in your area will appear here automatically.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {Array.isArray(pendingRequests) && pendingRequests.map((bk) => (
+            {pendingRequests.map((booking) => (
+              <Card key={booking._id} className="p-5 border-slate-200 shadow-xs bg-white flex flex-col justify-between space-y-4">
+                <div className="space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="text-[11px] font-bold text-primary-900 bg-primary-50 px-2 py-0.5 rounded-md border border-primary-200">
+                        ⚡ FairMatch Suitable
+                      </span>
+                      <h4 className="text-sm font-bold text-slate-900 mt-1.5">{booking.category || 'Home Service'}</h4>
+                    </div>
+                    <span className="text-sm font-black text-slate-900">{formatINR(booking.amount || 299)}</span>
+                  </div>
+
+                  <p className="text-xs text-slate-600 font-medium">"{booking.requirement || 'Service requested'}"</p>
+
+                  <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-3 text-xs text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                      {booking.customerLocation || 'Kothrud, Pune'} (~2.1 km)
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-slate-400" />
+                      {booking.timeSlot || 'Today • 4:00 PM'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    onClick={() => handleAcceptBooking(booking)}
+                    className="flex-1 font-bold gap-1"
+                  >
+                    <Check className="w-4 h-4" /> Accept Job
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleDeclineBooking(booking)}
+                    className="font-semibold text-slate-600 gap-1"
+                  >
+                    <X className="w-4 h-4" /> Decline
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* 4. Today's Work / Active Bookings */}
+      <section className="space-y-3">
+        <h2 className="text-base font-bold text-slate-900 tracking-tight">Today's Work & Active Bookings</h2>
+        {activeBookings.length === 0 ? (
+          <div className="text-center py-8 bg-white rounded-xl border border-slate-200 p-6 space-y-1">
+            <Clock className="w-6 h-6 text-slate-400 mx-auto" />
+            <p className="text-xs font-semibold text-slate-700">No in-progress jobs right now.</p>
+            <p className="text-[11px] text-slate-400">Accepted requests will move here for live status updates.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {activeBookings.map((booking) => (
               <BookingCard
-                key={bk._id}
-                booking={bk}
-                isWorkerView={true}
-                onAccept={handleAcceptBooking}
-                onDecline={handleDeclineBooking}
+                key={booking._id}
+                booking={booking}
+                userRole="WORKER"
+                onStartService={handleStartService}
+                onCompleteService={handleCompleteService}
+                onViewInvoice={setSelectedInvoiceBooking}
               />
             ))}
           </div>
         )}
       </section>
 
-      {/* Worker Shortcuts Hub */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-        <Link to="/worker/welfare" className="group">
-          <Card className="p-5 border-slate-200 group-hover:border-emerald-500 transition-all bg-emerald-50/30">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700">
-                  Cooperative Welfare
-                </h4>
-                <p className="text-[11px] text-slate-500">
-                  Insurance status & benefits fund
-                </p>
-              </div>
-            </div>
-          </Card>
-        </Link>
-
-        <Link to="/worker/profile" className="group">
-          <Card className="p-5 border-slate-200 group-hover:border-brand-500 transition-all bg-brand-50/30">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold">
-                <Briefcase className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-slate-900 group-hover:text-brand-700">
-                  Skill & Radius Settings
-                </h4>
-                <p className="text-[11px] text-slate-500">
-                  Edit coverage area & crafts
-                </p>
-              </div>
-            </div>
-          </Card>
-        </Link>
-
-        <Link to="/cooperative/ai-operations" className="group">
-          <Card className="p-5 border-slate-200 group-hover:border-purple-500 transition-all bg-purple-50/30">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-slate-900 group-hover:text-purple-700">
-                  Cooperative AI Insights
-                </h4>
-                <p className="text-[11px] text-slate-500">
-                  Demand forecast & rotation
-                </p>
-              </div>
-            </div>
-          </Card>
-        </Link>
-      </div>
+      {/* Digital Tax Invoice View Modal */}
+      {selectedInvoiceBooking && (
+        <DigitalInvoice
+          booking={selectedInvoiceBooking}
+          onClose={() => setSelectedInvoiceBooking(null)}
+        />
+      )}
     </div>
   );
 }
+
+export default WorkerDashboard;

@@ -6,7 +6,7 @@ try {
   const raw = localStorage.getItem('sevaconnect_user');
   if (raw) storedUser = JSON.parse(raw);
 } catch (e) {
-  console.error('Failed to parse stored user:', e);
+  storedUser = null;
 }
 
 export const useAuthStore = create((set) => ({

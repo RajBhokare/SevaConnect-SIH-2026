@@ -80,11 +80,11 @@ export function Signup() {
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-lg space-y-6">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl overflow-hidden shadow-md shadow-brand-500/20 mb-1 border border-slate-100 bg-white">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl overflow-hidden shadow-xs mb-1 border border-slate-100 bg-white">
             <img src="/logo.png" alt="SevaConnect Logo" className="w-full h-full object-contain p-1" />
           </div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-            Join <span className="text-brand-600">SevaConnect</span>
+            Join <span className="text-primary-600">SevaConnect</span>
           </h2>
           <p className="text-xs text-slate-500">
             Create an account to discover verified services or offer your skilled craft.
@@ -92,13 +92,13 @@ export function Signup() {
         </div>
 
         {/* Role Toggle Switch */}
-        <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-100/90 border border-slate-200/80 rounded-2xl">
+        <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 border border-slate-200 rounded-2xl">
           <button
             type="button"
             onClick={() => setRole('CUSTOMER')}
             className={`py-2.5 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 ${
               role === 'CUSTOMER'
-                ? 'bg-white text-brand-800 shadow-subtle border border-slate-200/60'
+                ? 'bg-white text-primary-800 shadow-xs border border-slate-200'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -110,7 +110,7 @@ export function Signup() {
             onClick={() => setRole('WORKER')}
             className={`py-2.5 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 ${
               role === 'WORKER'
-                ? 'bg-white text-coop-700 shadow-subtle border border-slate-200/60'
+                ? 'bg-white text-success-800 shadow-xs border border-slate-200'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -173,9 +173,9 @@ export function Signup() {
 
               {/* Worker-Specific KYC & Professional Fields */}
               {role === 'WORKER' && (
-                <div className="pt-3 border-t border-slate-100 space-y-3 bg-emerald-50/40 p-3.5 rounded-2xl border border-emerald-100">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-900">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <div className="pt-3 border-t border-slate-100 space-y-3 bg-success-50/40 p-3.5 rounded-2xl border border-success-100">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-success-900">
+                    <ShieldCheck className="w-4 h-4 text-success-600" />
                     Cooperative Worker Registration
                   </div>
 
@@ -229,7 +229,7 @@ export function Signup() {
             <div className="mt-4 pt-4 border-t border-slate-100 text-center">
               <p className="text-xs text-slate-600">
                 Already registered?{' '}
-                <Link to="/login" className="text-brand-600 font-bold hover:underline">
+                <Link to="/login" className="text-primary-600 font-bold hover:underline">
                   Log in
                 </Link>
               </p>

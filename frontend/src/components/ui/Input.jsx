@@ -27,16 +27,16 @@ export const Input = React.forwardRef(({
           ref={ref}
           type={type}
           className={cn(
-            'w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors',
+            'w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors',
             Icon && 'pl-10',
-            error && 'border-rose-500 focus:ring-rose-500 focus:border-rose-500',
+            error && 'border-danger-500 focus:ring-danger-500 focus:border-danger-500',
             className
           )}
           {...props}
         />
       </div>
       {error && (
-        <p className="text-xs text-rose-600 font-medium">{error}</p>
+        <p className="text-xs text-danger-600 font-medium">{error}</p>
       )}
       {!error && helperText && (
         <p className="text-xs text-slate-500">{helperText}</p>

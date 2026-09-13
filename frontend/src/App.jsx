@@ -18,6 +18,7 @@ import { WorkerRequests } from './pages/worker/WorkerRequests';
 import { WorkerProfile } from './pages/worker/WorkerProfile';
 import { WorkerWelfare } from './pages/worker/WorkerWelfare';
 import { AiOperations } from './pages/cooperative/AiOperations';
+import { FederationDashboard } from './pages/cooperative/FederationDashboard';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -38,7 +39,7 @@ export default function App() {
   const { role } = useAuthStore();
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-brand-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-primary-600 selection:text-white">
       <ToastProvider />
       <Navbar />
 
@@ -108,8 +109,9 @@ export default function App() {
             }
           />
 
-          {/* Cooperative Hub / AI Operations */}
+          {/* Cooperative Hub & Federation Admin */}
           <Route path="/cooperative/ai-operations" element={<AiOperations />} />
+          <Route path="/federation/admin" element={<FederationDashboard />} />
 
           {/* Catch-all fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

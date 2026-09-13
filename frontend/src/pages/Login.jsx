@@ -58,7 +58,7 @@ export function Login() {
             <img src="/logo.png" alt="SevaConnect Logo" className="w-full h-full object-contain p-1" />
           </div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-            Log in to <span className="text-brand-600">SevaConnect</span>
+            Log in to <span className="text-primary-600">SevaConnect</span>
           </h2>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             Connecting verified independent workers and valued customers across cooperative networks.
@@ -66,31 +66,31 @@ export function Login() {
         </div>
 
         {/* Demo Fast-Fill Buttons */}
-        <div className="bg-brand-50/70 border border-brand-200/80 rounded-2xl p-3.5 space-y-2">
-          <p className="text-[11px] font-bold text-brand-900 uppercase tracking-wider text-center">
+        <div className="bg-primary-50 border border-primary-200 rounded-2xl p-3.5 space-y-2">
+          <p className="text-[11px] font-bold text-primary-900 uppercase tracking-wider text-center">
             ⚡ Quick Demo Evaluator Autofill
           </p>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={() => autofillDemo('CUSTOMER')}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-brand-50 border border-brand-200/80 rounded-xl text-xs font-semibold text-brand-900 transition-colors shadow-subtle"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-primary-50 border border-primary-200 rounded-xl text-xs font-semibold text-primary-900 transition-colors shadow-xs"
             >
-              <UserCheck className="w-3.5 h-3.5 text-brand-600" />
+              <UserCheck className="w-3.5 h-3.5 text-primary-600" />
               Demo Customer
             </button>
             <button
               type="button"
               onClick={() => autofillDemo('WORKER')}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-brand-50 border border-brand-200/80 rounded-xl text-xs font-semibold text-brand-900 transition-colors shadow-subtle"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-primary-50 border border-primary-200 rounded-xl text-xs font-semibold text-primary-900 transition-colors shadow-xs"
             >
-              <Briefcase className="w-3.5 h-3.5 text-coop-600" />
+              <Briefcase className="w-3.5 h-3.5 text-success-600" />
               Demo Worker
             </button>
           </div>
         </div>
 
-        <Card className="border-slate-200/90 shadow-card bg-white">
+        <Card className="border-slate-200 shadow-sm bg-white">
           <CardContent className="p-6">
             <form onSubmit={handleLogin} className="space-y-4 text-left">
               <Input
@@ -117,7 +117,7 @@ export function Login() {
                 type="submit"
                 variant="primary"
                 size="lg"
-                className="w-full font-bold shadow-subtle"
+                className="w-full font-bold shadow-xs"
                 isLoading={isLoading}
               >
                 Sign In
@@ -127,7 +127,7 @@ export function Login() {
             <div className="mt-6 pt-4 border-t border-slate-100 text-center">
               <p className="text-xs text-slate-600">
                 New to SevaConnect?{' '}
-                <Link to="/signup" className="text-brand-600 font-bold hover:underline">
+                <Link to="/signup" className="text-primary-600 font-bold hover:underline">
                   Create an account
                 </Link>
               </p>
