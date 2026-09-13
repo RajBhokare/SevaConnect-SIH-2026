@@ -5,6 +5,9 @@ const paymentSchema = new mongoose.Schema({
   customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   workerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Worker', required: true },
   amount: { type: Number, required: true },
+  commissionRate: { type: Number, default: 0.10 },
+  commissionAmount: { type: Number, default: 0 },
+  workerEarning: { type: Number, default: 0 },
   method: {
     type: String,
     enum: ['UPI', 'CARD', 'NET_BANKING', 'CASH_ON_SERVICE'],
@@ -15,7 +18,8 @@ const paymentSchema = new mongoose.Schema({
     type: String,
     enum: ['SUCCESS', 'PENDING', 'FAILED'],
     default: 'SUCCESS'
-  }
+  },
+  isSimulated: { type: Boolean, default: true }
 }, { timestamps: true });
 
 module.exports = mongoose.models.Payment || mongoose.model('Payment', paymentSchema);

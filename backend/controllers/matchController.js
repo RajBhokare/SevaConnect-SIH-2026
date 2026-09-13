@@ -1,4 +1,5 @@
 const store = require('../config/store');
+const { workerMatchesCategory } = require('../utils/searchHelper');
 
 // Distance calculation utility (Haversine formula approximation in KM)
 const calculateDistanceKm = (coord1, coord2) => {
@@ -19,7 +20,7 @@ const calculateDistanceKm = (coord1, coord2) => {
  * FairMatch Engine:
  * 1. Hard Constraints (Zero Compromise):
  *    - Must have matching Skill/Category
- *    - Must be VERIFIED
+ *    - Must be VERIFIED / APPROVED and isListed: true
  *    - Must be currently AVAILABLE (or emergency-ready if emergency)
  * 2. Multi-Objective Scoring:
  *    - Distance Proximity (Weight: 35%)
@@ -37,8 +38,9 @@ const getFairMatchRecommendations = async (req, res) => {
 
     // 1. Strict Eligibility Filter (Hard Requirements)
     let eligibleWorkers = store.workers.filter(worker => {
-      // Must be verified
-      if (worker.verificationStatus !== 'VERIFIED') return false;
+      // Must be verified and listed
+      const isVerified = (worker.verificationStatus === 'VERIFIED' || worker.verificationStatus === 'APPROVED');
+      if (!isVerified || worker.isListed === false) return false;
 
       // Must be available
       if (isUrgent) {
@@ -49,10 +51,7 @@ const getFairMatchRecommendations = async (req, res) => {
 
       // Must match required skill category if specified
       if (category && category !== 'All') {
-        const catLower = category.toLowerCase();
-        const hasSkill = (worker.primarySkill && worker.primarySkill.toLowerCase().includes(catLower)) ||
-          (worker.skills && worker.skills.some(s => s.toLowerCase().includes(catLower)));
-        if (!hasSkill) return false;
+        if (!workerMatchesCategory(worker, category)) return false;
       }
 
       return true;

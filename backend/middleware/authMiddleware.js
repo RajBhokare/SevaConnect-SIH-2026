@@ -72,10 +72,11 @@ const protect = async (req, res, next) => {
   }
 };
 
-const requireRole = (role) => {
+const requireRole = (roles) => {
+  const allowed = Array.isArray(roles) ? roles : [roles];
   return (req, res, next) => {
-    if (!req.user || req.user.role !== role) {
-      return res.status(403).json({ message: `Access denied. Requires ${role} role.` });
+    if (!req.user || !allowed.includes(req.user.role)) {
+      return res.status(403).json({ message: `Access denied. Requires one of: ${allowed.join(', ')}.` });
     }
     next();
   };

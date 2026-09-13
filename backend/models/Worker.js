@@ -19,9 +19,17 @@ const workerSchema = new mongoose.Schema({
   cooperativeMemberId: { type: String, default: 'MSSC-4092' },
   verificationStatus: { 
     type: String, 
-    enum: ['PENDING', 'VERIFIED', 'REJECTED'], 
-    default: 'VERIFIED' 
+    enum: ['PENDING', 'APPROVED', 'VERIFIED', 'REJECTED'], 
+    default: 'PENDING' 
   },
+  isListed: { type: Boolean, default: true },
+  rejectionReason: { type: String, default: '' },
+  certifications: [{
+    name: { type: String },
+    issuer: { type: String },
+    year: { type: String },
+    verified: { type: Boolean, default: false }
+  }],
   certificationStatus: { type: Boolean, default: true },
   welfareStatus: {
     insuranceActive: { type: Boolean, default: true },

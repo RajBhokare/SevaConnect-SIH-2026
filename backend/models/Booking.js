@@ -15,6 +15,10 @@ const bookingSchema = new mongoose.Schema({
   date: { type: String, required: true },
   timeSlot: { type: String, required: true },
   amount: { type: Number, required: true, default: 350 },
+  commissionRate: { type: Number, default: 0.10 },
+  commissionAmount: { type: Number, default: 0 },
+  workerEarning: { type: Number, default: 0 },
+  completedAt: { type: Date },
   isEmergency: { type: Boolean, default: false },
   status: {
     type: String,

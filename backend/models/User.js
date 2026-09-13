@@ -5,7 +5,11 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['CUSTOMER', 'WORKER'], default: 'CUSTOMER' },
+  role: { 
+    type: String, 
+    enum: ['CUSTOMER', 'WORKER', 'ADMIN', 'COOPERATIVE_ADMIN'], 
+    default: 'CUSTOMER' 
+  },
   location: { type: String, default: 'Kothrud, Pune' },
   coordinates: {
     lat: { type: Number, default: 18.5074 },

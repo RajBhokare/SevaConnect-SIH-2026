@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { AiDemandForecast } from '../../components/AiDemandForecast';
+import { workerApi } from '../../services/api';
 import { formatINR } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
@@ -17,49 +18,9 @@ import {
   Flame,
   Sparkles,
   TrendingUp,
-  Check
+  Check,
+  RefreshCw
 } from 'lucide-react';
-
-const INITIAL_VERIFICATION_QUEUE = [
-  {
-    id: 'WRK-8921',
-    name: 'Suresh Patil',
-    trade: 'Electrician',
-    experience: '6 Years',
-    locality: 'Kothrud, Pune',
-    coopBranch: 'West Pune Federation',
-    certifications: [
-      { name: 'ITI Electrician National Trade Certificate', issuer: 'NCVT', year: '2019', verified: true },
-      { name: 'Disaster Safety Wireman License', issuer: 'Maharashtra Energy Board', year: '2021', verified: true }
-    ],
-    status: 'PENDING'
-  },
-  {
-    id: 'WRK-7412',
-    name: 'Kavita Shinde',
-    trade: 'Deep Home Cleaning',
-    experience: '4 Years',
-    locality: 'Karve Nagar, Pune',
-    coopBranch: 'South Pune Federation',
-    certifications: [
-      { name: 'NSDC Skill India Sanitation Certificate', issuer: 'NSDC', year: '2022', verified: true },
-      { name: 'Cooperative Self-Help Group Accreditation', issuer: 'MSSC Pune', year: '2023', verified: true }
-    ],
-    status: 'PENDING'
-  },
-  {
-    id: 'WRK-6520',
-    name: 'Ramesh Kulkarni',
-    trade: 'Plumber & Pipe Fitter',
-    experience: '8 Years',
-    locality: 'Shivajinagar, Pune',
-    coopBranch: 'Central Federation',
-    certifications: [
-      { name: 'Govt. Water Supply Plumbing License', issuer: 'Pune PMC', year: '2018', verified: false }
-    ],
-    status: 'PENDING'
-  }
-];
 
 const WAGE_FLOOR_BENCHMARKS = [
   { trade: 'Electrician', wageFloor: 350, marketAvg: 260, coopMargin: '+34.6%', totalHours: 1420, compliance: '100% Compliant' },
@@ -74,16 +35,45 @@ const CATEGORIES = ['Electrician', 'Plumber', 'Cleaning', 'Appliance', 'Carpentr
 
 export function FederationDashboard() {
   const [activeTab, setActiveTab] = useState('QUEUE');
-  const [queue, setQueue] = useState(INITIAL_VERIFICATION_QUEUE);
+  const [queue, setQueue] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState(null);
   const [rejectionReason, setRejectionReason] = useState('Certificate mismatch with government registry');
+  const [actionInProgress, setActionInProgress] = useState(false);
 
-  const handleApprove = (worker) => {
-    setQueue((prev) =>
-      prev.map((w) => (w.id === worker.id ? { ...w, status: 'APPROVED' } : w))
-    );
-    toast.success(`Artisan ${worker.name} (${worker.id}) approved into Cooperative Federation!`);
+  const fetchQueue = async () => {
+    try {
+      setLoading(true);
+      const res = await workerApi.getAdminQueue();
+      if (res.data && Array.isArray(res.data)) {
+        setQueue(res.data);
+      }
+    } catch (err) {
+      console.warn('Could not fetch queue from API:', err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchQueue();
+  }, []);
+
+  const handleApprove = async (worker) => {
+    try {
+      setActionInProgress(true);
+      const workerId = worker._id || worker.id;
+      await workerApi.verifyWorker(workerId, { status: 'VERIFIED' });
+      setQueue((prev) =>
+        prev.map((w) => ((w._id || w.id) === workerId ? { ...w, verificationStatus: 'VERIFIED', isListed: true } : w))
+      );
+      toast.success(`Artisan ${worker.name} approved & listed on Cooperative Marketplace!`);
+    } catch (err) {
+      toast.error('Failed to approve worker: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setActionInProgress(false);
+    }
   };
 
   const handleOpenReject = (worker) => {
@@ -91,21 +81,30 @@ export function FederationDashboard() {
     setRejectModalOpen(true);
   };
 
-  const handleConfirmReject = () => {
+  const handleConfirmReject = async () => {
     if (!selectedWorker) return;
-    setQueue((prev) =>
-      prev.map((w) =>
-        w.id === selectedWorker.id
-          ? { ...w, status: 'REJECTED', rejectionReason }
-          : w
-      )
-    );
-    toast.error(`Artisan ${selectedWorker.name} rejected: ${rejectionReason}`);
-    setRejectModalOpen(false);
-    setSelectedWorker(null);
+    try {
+      setActionInProgress(true);
+      const workerId = selectedWorker._id || selectedWorker.id;
+      await workerApi.verifyWorker(workerId, { status: 'REJECTED', rejectionReason });
+      setQueue((prev) =>
+        prev.map((w) =>
+          (w._id || w.id) === workerId
+            ? { ...w, verificationStatus: 'REJECTED', rejectionReason, isListed: false }
+            : w
+        )
+      );
+      toast.error(`Artisan ${selectedWorker.name} rejected: ${rejectionReason}`);
+      setRejectModalOpen(false);
+      setSelectedWorker(null);
+    } catch (err) {
+      toast.error('Failed to reject worker: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setActionInProgress(false);
+    }
   };
 
-  const pendingCount = queue.filter((w) => w.status === 'PENDING').length;
+  const pendingCount = queue.filter((w) => (w.verificationStatus || w.status) === 'PENDING').length;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 text-left">
@@ -183,74 +182,100 @@ export function FederationDashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {queue.map((worker) => (
-              <Card key={worker.id} className="p-5 border-slate-200 shadow-xs bg-white flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-400 font-mono">#{worker.id}</span>
-                      <h4 className="text-sm font-bold text-slate-900 mt-0.5">{worker.name}</h4>
-                      <p className="text-xs text-primary-900 font-semibold">{worker.trade} • {worker.experience}</p>
-                    </div>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      worker.status === 'APPROVED'
-                        ? 'bg-success-50 text-success-700 border border-success-200'
-                        : worker.status === 'REJECTED'
-                        ? 'bg-danger-50 text-danger-700 border border-danger-200'
-                        : 'bg-amber-50 text-amber-700 border border-amber-200'
-                    }`}>
-                      {worker.status}
-                    </span>
-                  </div>
+          {loading ? (
+            <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-xs">
+              <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-primary-900" />
+              Loading real-time verification queue...
+            </div>
+          ) : queue.length === 0 ? (
+            <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-xs">
+              No workers currently in the queue.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {queue.map((worker) => {
+                const wId = worker._id || worker.id;
+                const status = worker.verificationStatus || worker.status || 'PENDING';
+                const trade = worker.primarySkill || worker.trade || 'General Services';
+                const exp = typeof worker.experience === 'number' ? `${worker.experience} Yrs Exp` : worker.experience;
+                const locality = worker.location || worker.locality || 'Pune';
+                const coop = worker.cooperativeName || worker.coopBranch || 'Maharashtra Shramik Swavalamban Cooperative';
+                const certs = Array.isArray(worker.certifications) ? worker.certifications : [trade];
 
-                  <p className="text-xs text-slate-500 flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400" /> {worker.locality} ({worker.coopBranch})
-                  </p>
-
-                  <div className="space-y-1.5 pt-2 border-t border-slate-100">
-                    <p className="text-[11px] font-bold text-slate-700">Submitted Certifications:</p>
-                    {worker.certifications.map((c, i) => (
-                      <div key={i} className="p-2 bg-slate-50 rounded-lg text-xs space-y-0.5">
-                        <div className="flex items-center justify-between font-semibold text-slate-800">
-                          <span className="truncate max-w-[180px]">{c.name}</span>
-                          <span className={c.verified ? 'text-success-700 text-[10px]' : 'text-amber-600 text-[10px]'}>
-                            {c.verified ? '✓ Registry Match' : 'Pending Check'}
-                          </span>
+                return (
+                  <Card key={wId} className="p-5 border-slate-200 shadow-xs bg-white flex flex-col justify-between space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="text-[10px] font-bold text-slate-400 font-mono">#{wId}</span>
+                          <h4 className="text-sm font-bold text-slate-900 mt-0.5">{worker.name}</h4>
+                          <p className="text-xs text-primary-900 font-semibold">{trade} • {exp}</p>
                         </div>
-                        <p className="text-[10px] text-slate-400">{c.issuer} • Issued {c.year}</p>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          status === 'APPROVED' || status === 'VERIFIED'
+                            ? 'bg-success-50 text-success-700 border border-success-200'
+                            : status === 'REJECTED'
+                            ? 'bg-danger-50 text-danger-700 border border-danger-200'
+                            : 'bg-amber-50 text-amber-700 border border-amber-200'
+                        }`}>
+                          {status}
+                        </span>
                       </div>
-                    ))}
-                  </div>
-                </div>
 
-                {worker.status === 'PENDING' ? (
-                  <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
-                    <Button
-                      size="sm"
-                      variant="primary"
-                      onClick={() => handleApprove(worker)}
-                      className="flex-1 font-bold"
-                    >
-                      <Check className="w-3.5 h-3.5 mr-1" /> Approve
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleOpenReject(worker)}
-                      className="font-semibold text-danger-600 border-danger-200"
-                    >
-                      Reject
-                    </Button>
-                  </div>
-                ) : (
-                  <p className="text-xs font-semibold text-slate-500 pt-2 border-t border-slate-100 italic">
-                    Decision recorded.
-                  </p>
-                )}
-              </Card>
-            ))}
-          </div>
+                      <p className="text-xs text-slate-500 flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" /> {locality} ({coop})
+                      </p>
+
+                      <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                        <p className="text-[11px] font-bold text-slate-700">Govt ID & Certifications:</p>
+                        <div className="p-2 bg-slate-50 rounded-lg text-xs space-y-0.5">
+                          <div className="flex items-center justify-between font-semibold text-slate-800">
+                            <span className="truncate max-w-[180px] font-mono text-[11px]">{worker.governmentIdMasked || 'UIDAI-VERIFIED-AUTH'}</span>
+                            <span className="text-success-700 text-[10px]">✓ ID Verified</span>
+                          </div>
+                          <p className="text-[10px] text-slate-500">
+                            Trade Skills: {certs.map(c => (typeof c === 'string' ? c : c.name)).join(', ')}
+                          </p>
+                        </div>
+                        {worker.rejectionReason && (
+                          <p className="text-[11px] text-danger-600 font-semibold bg-danger-50 p-2 rounded-lg border border-danger-200">
+                            Reason: {worker.rejectionReason}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {status === 'PENDING' ? (
+                      <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          disabled={actionInProgress}
+                          onClick={() => handleApprove(worker)}
+                          className="flex-1 font-bold"
+                        >
+                          <Check className="w-3.5 h-3.5 mr-1" /> Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={actionInProgress}
+                          onClick={() => handleOpenReject(worker)}
+                          className="font-semibold text-danger-600 border-danger-200"
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    ) : (
+                      <p className="text-xs font-semibold text-slate-500 pt-2 border-t border-slate-100 italic">
+                        {status === 'VERIFIED' || status === 'APPROVED' ? '✓ Listed on Marketplace' : '✕ Application Rejected'}
+                      </p>
+                    )}
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </section>
       )}
 

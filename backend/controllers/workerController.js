@@ -1,37 +1,31 @@
 const store = require('../config/store');
+const { workerMatchesCategory, workerMatchesQuery } = require('../utils/searchHelper');
 
-// Strip sensitive government ID reference
+// Strip sensitive government ID reference unless requested by authorized admin
 const sanitizeWorker = (worker) => {
   if (!worker) return null;
   const { governmentIdRef, ...safeWorker } = worker;
   return safeWorker;
 };
 
-// Get all verified/available workers with filters
+// Get all verified/available workers with filters (Marketplace View)
 const getWorkers = async (req, res) => {
   try {
     const { category, search, availableOnly, sort } = req.query;
 
-    let list = store.workers.map(w => sanitizeWorker(w));
+    // Only return VERIFIED / APPROVED workers who are listed in the marketplace
+    let list = store.workers
+      .filter(w => (w.verificationStatus === 'VERIFIED' || w.verificationStatus === 'APPROVED') && w.isListed !== false)
+      .map(w => sanitizeWorker(w));
 
-    // Filter by category / skill
+    // Filter by category / skill with semantic alias matching
     if (category && category !== 'All') {
-      const catLower = category.toLowerCase();
-      list = list.filter(w => 
-        (w.primarySkill && w.primarySkill.toLowerCase().includes(catLower)) ||
-        (w.skills && w.skills.some(s => s.toLowerCase().includes(catLower)))
-      );
+      list = list.filter(w => workerMatchesCategory(w, category));
     }
 
-    // Filter by search query
-    if (search) {
-      const q = search.toLowerCase();
-      list = list.filter(w => 
-        w.name.toLowerCase().includes(q) ||
-        (w.location && w.location.toLowerCase().includes(q)) ||
-        (w.serviceArea && w.serviceArea.toLowerCase().includes(q)) ||
-        (w.skills && w.skills.some(s => s.toLowerCase().includes(q)))
-      );
+    // Filter by search query with intelligent category stemming
+    if (search && search.trim()) {
+      list = list.filter(w => workerMatchesQuery(w, search));
     }
 
     // Filter available only
@@ -185,11 +179,87 @@ const getWelfareDetails = async (req, res) => {
   }
 };
 
+// Admin: Get Worker Verification Queue
+const getAdminVerificationQueue = async (req, res) => {
+  try {
+    const { status } = req.query;
+    let list = store.workers;
+
+    if (status && status !== 'ALL') {
+      list = list.filter(w => w.verificationStatus === status);
+    }
+
+    // Return workers with verification details (mask government ID partially for admin inspection)
+    const queue = list.map(w => ({
+      _id: w._id,
+      userId: w.userId,
+      name: w.name,
+      phone: w.phone,
+      email: w.email,
+      primarySkill: w.primarySkill,
+      skills: w.skills,
+      experience: w.experience,
+      hourlyRate: w.hourlyRate,
+      location: w.location,
+      serviceArea: w.serviceArea,
+      cooperativeName: w.cooperativeName,
+      cooperativeMemberId: w.cooperativeMemberId,
+      verificationStatus: w.verificationStatus || 'PENDING',
+      isListed: Boolean(w.isListed),
+      rejectionReason: w.rejectionReason || null,
+      governmentIdMasked: w.governmentIdRef ? `${w.governmentIdRef.substring(0, 6)}****${w.governmentIdRef.slice(-4)}` : 'AADHAAR-VERIFIED-AUTH',
+      certifications: w.certifications || [w.primarySkill],
+      createdAt: w.createdAt || new Date().toISOString()
+    }));
+
+    res.json(queue);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching verification queue.' });
+  }
+};
+
+// Admin: Update Worker Verification (Approve / Reject)
+const verifyWorker = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, rejectionReason } = req.body; // status: 'APPROVED', 'VERIFIED', 'REJECTED'
+
+    if (!['APPROVED', 'VERIFIED', 'REJECTED', 'PENDING'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid verification status. Must be APPROVED, VERIFIED, REJECTED, or PENDING.' });
+    }
+
+    const worker = store.workers.find(w => w._id === id || w.userId === id);
+    if (!worker) {
+      return res.status(404).json({ message: 'Worker not found.' });
+    }
+
+    worker.verificationStatus = status;
+    worker.isListed = (status === 'APPROVED' || status === 'VERIFIED');
+    worker.certificationStatus = (status === 'APPROVED' || status === 'VERIFIED');
+    if (status === 'REJECTED') {
+      worker.rejectionReason = rejectionReason || 'Documentation or profile details could not be verified.';
+      worker.isAvailable = false;
+    } else if (status === 'APPROVED' || status === 'VERIFIED') {
+      worker.rejectionReason = null;
+      worker.isAvailable = true;
+    }
+
+    res.json({
+      message: `Worker verification status updated to ${status}.`,
+      worker: sanitizeWorker(worker)
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating worker verification.' });
+  }
+};
+
 module.exports = {
   getWorkers,
   getWorkerById,
   updateWorkerProfile,
   toggleAvailability,
   getWorkerDashboard,
-  getWelfareDetails
+  getWelfareDetails,
+  getAdminVerificationQueue,
+  verifyWorker
 };

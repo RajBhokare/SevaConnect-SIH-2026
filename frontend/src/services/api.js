@@ -38,7 +38,9 @@ export const workerApi = {
   updateProfile: (id, data) => api.put(`/workers/${id}`, data),
   toggleAvailability: (isAvailable) => api.patch('/workers/availability', { isAvailable }),
   getDashboard: () => api.get('/workers/dashboard'),
-  getWelfare: () => api.get('/workers/welfare')
+  getWelfare: () => api.get('/workers/welfare'),
+  getAdminQueue: (params) => api.get('/workers/admin/queue', { params }),
+  verifyWorker: (id, data) => api.patch(`/workers/admin/${id}/verify`, data)
 };
 
 // FairMatch Recommendations API

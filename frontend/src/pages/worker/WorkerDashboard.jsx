@@ -133,10 +133,22 @@ export function WorkerDashboard() {
               <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                 Good morning, {worker?.name || 'Santosh'} 👋
               </h1>
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-success-700 bg-success-50 px-2.5 py-0.5 rounded-full border border-success-200">
-                <ShieldCheck className="w-3.5 h-3.5 text-success-600" />
-                Verified Cooperative Member
-              </span>
+              {worker?.verificationStatus === 'VERIFIED' || worker?.verificationStatus === 'APPROVED' ? (
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-success-700 bg-success-50 px-2.5 py-0.5 rounded-full border border-success-200">
+                  <ShieldCheck className="w-3.5 h-3.5 text-success-600" />
+                  Verified Cooperative Member
+                </span>
+              ) : worker?.verificationStatus === 'REJECTED' ? (
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-danger-700 bg-danger-50 px-2.5 py-0.5 rounded-full border border-danger-200">
+                  <X className="w-3.5 h-3.5 text-danger-600" />
+                  Application Rejected
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                  <Clock className="w-3.5 h-3.5 text-amber-600" />
+                  Verification Pending
+                </span>
+              )}
             </div>
             <p className="text-xs text-slate-500 font-medium">
               {worker?.primarySkill || 'Independent Artisan'} • {worker?.cooperativeName || 'Maharashtra Shramik Swavalamban Cooperative'}
@@ -164,6 +176,32 @@ export function WorkerDashboard() {
           </Button>
         </div>
       </section>
+
+      {/* Verification Notice Banner */}
+      {worker?.verificationStatus === 'PENDING' && (
+        <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+          <Clock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1">
+            <p className="font-bold text-amber-900">Cooperative Federation Verification in Progress</p>
+            <p className="text-amber-800">
+              Your trade credentials and government ID are under review by the Pune Central Cooperative Federation Node.
+              Once approved by the cooperative administrator, your profile will be listed on the public customer marketplace and you will receive FairMatch job dispatches.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {worker?.verificationStatus === 'REJECTED' && (
+        <div className="bg-danger-50/80 border border-danger-200 rounded-2xl p-4 flex items-start gap-3">
+          <X className="w-5 h-5 text-danger-600 shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1">
+            <p className="font-bold text-danger-900">Verification Action Required</p>
+            <p className="text-danger-800">
+              Your application was reviewed by the cooperative administrator: {worker?.rejectionReason || 'Please resubmit updated trade certification or government ID.'}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* 2. Key Business Metrics Summary */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-left">

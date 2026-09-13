@@ -30,6 +30,8 @@ export function Login() {
 
       if (res.data.user.role === 'WORKER') {
         navigate('/worker/dashboard');
+      } else if (res.data.user.role === 'ADMIN' || res.data.user.role === 'COOPERATIVE_ADMIN') {
+        navigate('/cooperative/dashboard');
       } else {
         navigate('/customer/home');
       }
@@ -44,8 +46,11 @@ export function Login() {
     if (role === 'CUSTOMER') {
       setEmail('customer@demo.com');
       setPassword('password123');
-    } else {
+    } else if (role === 'WORKER') {
       setEmail('worker@demo.com');
+      setPassword('password123');
+    } else if (role === 'ADMIN') {
+      setEmail('admin@demo.com');
       setPassword('password123');
     }
   };
@@ -70,22 +75,30 @@ export function Login() {
           <p className="text-[11px] font-bold text-primary-900 uppercase tracking-wider text-center">
             ⚡ Quick Demo Evaluator Autofill
           </p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             <button
               type="button"
               onClick={() => autofillDemo('CUSTOMER')}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-primary-50 border border-primary-200 rounded-xl text-xs font-semibold text-primary-900 transition-colors shadow-xs"
+              className="flex items-center justify-center gap-1 px-2 py-2 bg-white hover:bg-primary-50 border border-primary-200 rounded-xl text-[11px] font-semibold text-primary-900 transition-colors shadow-xs"
             >
               <UserCheck className="w-3.5 h-3.5 text-primary-600" />
-              Demo Customer
+              Customer
             </button>
             <button
               type="button"
               onClick={() => autofillDemo('WORKER')}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-primary-50 border border-primary-200 rounded-xl text-xs font-semibold text-primary-900 transition-colors shadow-xs"
+              className="flex items-center justify-center gap-1 px-2 py-2 bg-white hover:bg-primary-50 border border-primary-200 rounded-xl text-[11px] font-semibold text-primary-900 transition-colors shadow-xs"
             >
               <Briefcase className="w-3.5 h-3.5 text-success-600" />
-              Demo Worker
+              Worker
+            </button>
+            <button
+              type="button"
+              onClick={() => autofillDemo('ADMIN')}
+              className="flex items-center justify-center gap-1 px-2 py-2 bg-white hover:bg-primary-50 border border-primary-200 rounded-xl text-[11px] font-semibold text-primary-900 transition-colors shadow-xs"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-amber-600" />
+              Admin
             </button>
           </div>
         </div>

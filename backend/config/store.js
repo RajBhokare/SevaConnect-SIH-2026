@@ -113,6 +113,19 @@ const seedInitialData = () => {
   const salt = bcrypt.genSaltSync(10);
   const passwordHash = bcrypt.hashSync('password123', salt);
 
+  // Default Admin
+  const defaultAdmin = {
+    _id: 'usr-admin-1',
+    name: 'Cooperative Admin (Pune Federation)',
+    phone: '9822000000',
+    email: 'admin@demo.com',
+    password: passwordHash,
+    role: 'ADMIN',
+    location: 'Shivajinagar, Pune',
+    coordinates: { lat: 18.5314, lng: 73.8446 },
+    createdAt: new Date().toISOString()
+  };
+
   // Default Customer
   const defaultCustomer = {
     _id: 'usr-cust-1',
@@ -175,7 +188,31 @@ const seedInitialData = () => {
     createdAt: new Date().toISOString()
   };
 
-  users = [defaultCustomer, defaultWorkerUser1, defaultWorkerUser2, defaultWorkerUser3, defaultWorkerUser4];
+  const defaultWorkerUser5 = {
+    _id: 'usr-wrk-5',
+    name: 'Kavita Shinde',
+    phone: '9822088776',
+    email: 'kavita@demo.com',
+    password: passwordHash,
+    role: 'WORKER',
+    location: 'Karve Nagar, Pune',
+    coordinates: { lat: 18.4950, lng: 73.8250 },
+    createdAt: new Date().toISOString()
+  };
+
+  const defaultWorkerUser6 = {
+    _id: 'usr-wrk-6',
+    name: 'Vinayak Gaikwad',
+    phone: '9822033221',
+    email: 'vinayak@demo.com',
+    password: passwordHash,
+    role: 'WORKER',
+    location: 'Kothrud, Pune',
+    coordinates: { lat: 18.5020, lng: 73.8050 },
+    createdAt: new Date().toISOString()
+  };
+
+  users = [defaultAdmin, defaultCustomer, defaultWorkerUser1, defaultWorkerUser2, defaultWorkerUser3, defaultWorkerUser4, defaultWorkerUser5, defaultWorkerUser6];
 
   // Worker Profiles with Initial AI Ranks & Metrics
   workers = [
@@ -188,14 +225,18 @@ const seedInitialData = () => {
       location: 'Kothrud, Pune',
       serviceArea: 'Kothrud, Karve Nagar, Deccan, Paud Road',
       coordinates: { lat: 18.5090, lng: 73.8090 },
-      skills: ['Plumber', 'Pipe Fitting', 'Tap Repair', 'Water Tank Cleaning'],
+      skills: ['Plumber', 'Pipe Fitting', 'Tap Repair', 'Drainage Clearing'],
       primarySkill: 'Plumber',
       experience: 8,
       hourlyRate: 299,
       cooperativeName: 'Maharashtra Shramik Swavalamban Cooperative',
       cooperativeMemberId: 'MSSC-4092',
       verificationStatus: 'VERIFIED',
+      isListed: true,
       certificationStatus: true,
+      certifications: [
+        { name: 'Govt. Water Supply & Plumbing Certification', issuer: 'Maharashtra Vocational Board', year: '2019', verified: true }
+      ],
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #7782',
@@ -245,7 +286,11 @@ const seedInitialData = () => {
       cooperativeName: 'Maharashtra Shramik Swavalamban Cooperative',
       cooperativeMemberId: 'MSSC-5120',
       verificationStatus: 'VERIFIED',
+      isListed: true,
       certificationStatus: true,
+      certifications: [
+        { name: 'Appliance Repair & Wiring License', issuer: 'ITI Pune', year: '2020', verified: true }
+      ],
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #8104',
@@ -288,14 +333,18 @@ const seedInitialData = () => {
       location: 'Shivajinagar, Pune',
       serviceArea: 'Shivajinagar, Model Colony, FC Road, Aundh',
       coordinates: { lat: 18.5314, lng: 73.8446 },
-      skills: ['Electrician', 'Wiring', 'MCB Installation', 'Inverter Wiring'],
+      skills: ['Electrician', 'Wiring', 'MCB Installation', 'Inverter Wiring', 'Electrical Repair'],
       primarySkill: 'Electrician',
       experience: 7,
       hourlyRate: 280,
       cooperativeName: 'Pune Shramik Kalyan Sahakari Sanstha',
       cooperativeMemberId: 'PSKS-1983',
       verificationStatus: 'VERIFIED',
+      isListed: true,
       certificationStatus: true,
+      certifications: [
+        { name: 'Disaster Safety Wireman License', issuer: 'Maharashtra Energy Board', year: '2021', verified: true }
+      ],
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #9011',
@@ -338,14 +387,18 @@ const seedInitialData = () => {
       location: 'Deccan Gymkhana, Pune',
       serviceArea: 'Deccan, Swargate, Sadashiv Peth, Narayan Peth',
       coordinates: { lat: 18.5167, lng: 73.8415 },
-      skills: ['Carpenter', 'Furniture Assembly', 'Door Locks', 'Cupboard Repair'],
+      skills: ['Carpenter', 'Furniture Assembly', 'Door Locks', 'Cupboard Repair', 'Woodwork'],
       primarySkill: 'Carpenter',
       experience: 10,
       hourlyRate: 350,
       cooperativeName: 'Maharashtra Shramik Swavalamban Cooperative',
       cooperativeMemberId: 'MSSC-3201',
       verificationStatus: 'VERIFIED',
+      isListed: true,
       certificationStatus: true,
+      certifications: [
+        { name: 'National Trade Certificate (Carpentry)', issuer: 'NCVT', year: '2018', verified: true }
+      ],
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #6220',
@@ -377,6 +430,178 @@ const seedInitialData = () => {
         reliabilityScore: 85.0
       },
       topCategories: ['Service Quality', 'Timeliness', 'Professionalism'],
+      lastCalculatedAt: new Date().toISOString()
+    },
+    {
+      _id: 'wrk-5',
+      userId: 'usr-wrk-5',
+      name: 'Kavita Shinde',
+      phone: '9822088776',
+      email: 'kavita@demo.com',
+      location: 'Karve Nagar, Pune',
+      serviceArea: 'Karve Nagar, Kothrud, Deccan, Warje',
+      coordinates: { lat: 18.4950, lng: 73.8250 },
+      skills: ['Cleaner', 'Deep Home Cleaning', 'Kitchen Degreasing', 'Bathroom Cleaning', 'Sofa Shampooing', 'Sanitization'],
+      primarySkill: 'Cleaner',
+      experience: 6,
+      hourlyRate: 249,
+      cooperativeName: 'South Pune Federation',
+      cooperativeMemberId: 'MSSC-7412',
+      verificationStatus: 'VERIFIED',
+      isListed: true,
+      certificationStatus: true,
+      certifications: [
+        { name: 'NSDC Skill India Sanitation Certificate', issuer: 'NSDC', year: '2022', verified: true },
+        { name: 'Cooperative Self-Help Group Accreditation', issuer: 'MSSC Pune', year: '2023', verified: true }
+      ],
+      welfareStatus: {
+        insuranceActive: true,
+        insurancePolicy: 'PM-SYM / Shramik Suraksha #4432',
+        welfareFundContribution: 2900,
+        totalEarnings: 27800
+      },
+      isAvailable: true,
+      serviceRadius: 10,
+      emergencyAvailable: false,
+      rating: 4.9,
+      reviewCount: 6,
+      completedJobs: 65,
+      activeWorkload: 0,
+      bio: 'NSDC certified sanitization specialist with 6+ years in residential deep cleaning, kitchen degreasing, and upholstery care.',
+      governmentIdRef: 'GOV-ID-ENC-7744',
+      rank: 'Diamond',
+      score: 91,
+      rankConfidence: 0.94,
+      positiveFeedbackPercentage: 100,
+      sentimentScore: 0.89,
+      rankSummary: 'Diamond — 91/100: Exceptional cleaning and deep hygiene quality with glowing customer reviews.',
+      topCategories: ['Service Quality', 'Thoroughness', 'Punctuality'],
+      lastCalculatedAt: new Date().toISOString()
+    },
+    {
+      _id: 'wrk-6',
+      userId: 'usr-wrk-6',
+      name: 'Vinayak Gaikwad',
+      phone: '9822033221',
+      email: 'vinayak@demo.com',
+      location: 'Kothrud, Pune',
+      serviceArea: 'Kothrud, Karve Nagar, Deccan, Aundh',
+      coordinates: { lat: 18.5020, lng: 73.8050 },
+      skills: ['Painter', 'Wall Painting', 'Waterproofing', 'Single Wall Texture', 'Touch-up & Patch'],
+      primarySkill: 'Painter',
+      experience: 9,
+      hourlyRate: 320,
+      cooperativeName: 'Maharashtra Shramik Swavalamban Cooperative',
+      cooperativeMemberId: 'MSSC-8819',
+      verificationStatus: 'VERIFIED',
+      isListed: true,
+      certificationStatus: true,
+      certifications: [
+        { name: 'Master Painter & Surface Coating Certificate', issuer: 'Pune PMC Guild', year: '2019', verified: true }
+      ],
+      welfareStatus: {
+        insuranceActive: true,
+        insurancePolicy: 'PM-SYM / Shramik Suraksha #5567',
+        welfareFundContribution: 3400,
+        totalEarnings: 31200
+      },
+      isAvailable: true,
+      serviceRadius: 12,
+      emergencyAvailable: false,
+      rating: 4.8,
+      reviewCount: 4,
+      completedJobs: 48,
+      activeWorkload: 1,
+      bio: 'Expert wall painter and waterproofing specialist. 9 years experience delivering flawless textures and weather-coat applications.',
+      governmentIdRef: 'GOV-ID-ENC-9911',
+      rank: 'Platinum',
+      score: 82,
+      rankConfidence: 0.88,
+      positiveFeedbackPercentage: 100,
+      sentimentScore: 0.81,
+      rankSummary: 'Platinum — 82/100: High craftsmanship standard and steady customer satisfaction.',
+      topCategories: ['Craftsmanship', 'Finishing', 'Reliability'],
+      lastCalculatedAt: new Date().toISOString()
+    },
+    // Seed Pending Verification Workers (For Admin Queue Demonstration)
+    {
+      _id: 'wrk-pending-1',
+      userId: 'usr-wrk-p1',
+      name: 'Ramesh Kulkarni',
+      phone: '9822055667',
+      email: 'ramesh.k@example.com',
+      location: 'Shivajinagar, Pune',
+      serviceArea: 'Shivajinagar, Central Pune',
+      coordinates: { lat: 18.5314, lng: 73.8446 },
+      skills: ['Plumber', 'Pipe Fitter', 'Commercial Plumbing'],
+      primarySkill: 'Plumber',
+      experience: 8,
+      hourlyRate: 300,
+      cooperativeName: 'Central Federation',
+      cooperativeMemberId: 'WRK-6520',
+      verificationStatus: 'PENDING',
+      isListed: false,
+      certificationStatus: false,
+      certifications: [
+        { name: 'Govt. Water Supply Plumbing License', issuer: 'Pune PMC', year: '2018', verified: false }
+      ],
+      welfareStatus: {
+        insuranceActive: false,
+        insurancePolicy: '',
+        welfareFundContribution: 0,
+        totalEarnings: 0
+      },
+      isAvailable: true,
+      serviceRadius: 10,
+      emergencyAvailable: true,
+      rating: 5.0,
+      reviewCount: 0,
+      completedJobs: 0,
+      activeWorkload: 0,
+      bio: 'Experienced municipal and residential pipe fitter awaiting cooperative accreditation verification.',
+      governmentIdRef: 'GOV-ID-SUBMITTED-8822',
+      rank: 'Unranked',
+      score: 0,
+      lastCalculatedAt: new Date().toISOString()
+    },
+    {
+      _id: 'wrk-pending-2',
+      userId: 'usr-wrk-p2',
+      name: 'Sunita Jadhav',
+      phone: '9822011998',
+      email: 'sunita.j@example.com',
+      location: 'Warje, Pune',
+      serviceArea: 'Warje, Kothrud, Karve Nagar',
+      coordinates: { lat: 18.4800, lng: 73.8000 },
+      skills: ['Domestic Helper', 'Housekeeping', 'Kitchen Help', 'Floor Cleaning'],
+      primarySkill: 'Domestic Helper',
+      experience: 4,
+      hourlyRate: 199,
+      cooperativeName: 'West Pune Federation',
+      cooperativeMemberId: 'WRK-3319',
+      verificationStatus: 'PENDING',
+      isListed: false,
+      certificationStatus: false,
+      certifications: [
+        { name: 'Cooperative Self-Help Group Accreditation', issuer: 'MSSC Pune', year: '2023', verified: false }
+      ],
+      welfareStatus: {
+        insuranceActive: false,
+        insurancePolicy: '',
+        welfareFundContribution: 0,
+        totalEarnings: 0
+      },
+      isAvailable: true,
+      serviceRadius: 8,
+      emergencyAvailable: false,
+      rating: 5.0,
+      reviewCount: 0,
+      completedJobs: 0,
+      activeWorkload: 0,
+      bio: 'Dedicated household assistance and kitchen support artisan with verified local references.',
+      governmentIdRef: 'GOV-ID-SUBMITTED-4411',
+      rank: 'Unranked',
+      score: 0,
       lastCalculatedAt: new Date().toISOString()
     }
   ];

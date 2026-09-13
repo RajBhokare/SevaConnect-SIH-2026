@@ -71,24 +71,28 @@ const signup = async (req, res) => {
         hourlyRate: 280,
         cooperativeName: 'Maharashtra Shramik Swavalamban Cooperative',
         cooperativeMemberId: `MSSC-${Math.floor(1000 + Math.random() * 9000)}`,
-        verificationStatus: 'VERIFIED',
-        certificationStatus: true,
+        verificationStatus: 'PENDING',
+        isListed: false,
+        certificationStatus: false,
+        certifications: parsedSkills,
+        rejectionReason: null,
         welfareStatus: {
           insuranceActive: true,
           insurancePolicy: `PM-SYM / Shramik Suraksha #${Math.floor(1000 + Math.random() * 9000)}`,
           welfareFundContribution: 1500,
           totalEarnings: 0
         },
-        isAvailable: true,
+        isAvailable: false,
         serviceRadius: 10,
-        emergencyAvailable: true,
+        emergencyAvailable: false,
         rating: 5.0,
-        reviewCount: 1,
+        reviewCount: 0,
         completedJobs: 0,
         activeWorkload: 0,
-        bio: `Verified cooperative professional with ${experience || 3} years of expertise in ${primarySkill}.`,
-        // Government ID is hashed/tokenized and private
-        governmentIdRef: governmentIdRef ? `GOV-ID-${Math.random().toString(36).substring(7).toUpperCase()}` : 'GOV-ID-VERIFIED'
+        bio: `Cooperative professional with ${experience || 3} years of expertise in ${primarySkill}. Profile submitted for cooperative federation verification.`,
+        // Government ID reference for verification
+        governmentIdRef: governmentIdRef ? `GOV-ID-${Math.random().toString(36).substring(7).toUpperCase()}` : `AADHAAR-TOKEN-${Math.floor(10000000 + Math.random() * 90000000)}`,
+        createdAt: new Date().toISOString()
       };
 
       store.workers.push(workerProfile);
