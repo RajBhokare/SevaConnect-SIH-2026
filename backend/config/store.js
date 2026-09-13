@@ -214,7 +214,7 @@ const seedInitialData = () => {
 
   users = [defaultAdmin, defaultCustomer, defaultWorkerUser1, defaultWorkerUser2, defaultWorkerUser3, defaultWorkerUser4, defaultWorkerUser5, defaultWorkerUser6];
 
-  // Worker Profiles with Initial AI Ranks & Metrics
+  // Worker Profiles with Initial AI Ranks & Metric  // Verified Workers initialized with real zero-baseline stats
   workers = [
     {
       _id: 'wrk-1',
@@ -240,35 +240,19 @@ const seedInitialData = () => {
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #7782',
-        welfareFundContribution: 3850,
-        totalEarnings: 34200
+        welfareFundContribution: 0,
+        totalEarnings: 0
       },
       isAvailable: true,
       serviceRadius: 12,
       emergencyAvailable: true,
-      rating: 4.9,
-      reviewCount: 5,
-      completedJobs: 58,
-      activeWorkload: 1,
+      rating: 5.0,
+      reviewCount: 0,
+      completedJobs: 0,
+      activeWorkload: 0,
       bio: 'Certified Master Plumber with 8+ years experience. Specializes in rapid leak detection, brass fittings, and sanitary installations.',
       governmentIdRef: 'GOV-ID-ENC-9988',
-      
-      // AI Ranking
-      rank: 'Diamond',
-      score: 94,
-      rankConfidence: 0.96,
-      positiveFeedbackPercentage: 100,
-      sentimentScore: 0.92,
-      rankSummary: 'Diamond — 94/100: Consistently exceptional service quality, outstanding customer sentiment (100% positive), and trusted track record.',
-      rankBreakdown: {
-        ratingScore: 97.5,
-        sentimentScore: 96.0,
-        volumeScore: 100.0,
-        consistencyScore: 98.0,
-        reliabilityScore: 95.0
-      },
-      topCategories: ['Service Quality', 'Professionalism', 'Timeliness'],
-      lastCalculatedAt: new Date().toISOString()
+      createdAt: new Date(Date.now() - 86400000 * 10).toISOString()
     },
     {
       _id: 'wrk-2',
@@ -294,35 +278,19 @@ const seedInitialData = () => {
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #8104',
-        welfareFundContribution: 2100,
-        totalEarnings: 21500
+        welfareFundContribution: 0,
+        totalEarnings: 0
       },
       isAvailable: true,
       serviceRadius: 10,
       emergencyAvailable: true,
-      rating: 4.3,
-      reviewCount: 3,
-      completedJobs: 34,
+      rating: 5.0,
+      reviewCount: 0,
+      completedJobs: 0,
       activeWorkload: 0,
       bio: 'Skilled in residential plumbing, motor connections, and instant geyser maintenance.',
       governmentIdRef: 'GOV-ID-ENC-5544',
-      
-      // AI Ranking
-      rank: 'Silver',
-      score: 58,
-      rankConfidence: 0.78,
-      positiveFeedbackPercentage: 67,
-      sentimentScore: 0.35,
-      rankSummary: 'Silver — 58/100: Developing track record with moderate customer feedback and steady delivery.',
-      rankBreakdown: {
-        ratingScore: 65.0,
-        sentimentScore: 60.0,
-        volumeScore: 70.0,
-        consistencyScore: 60.0,
-        reliabilityScore: 50.0
-      },
-      topCategories: ['Service Quality', 'Pricing & Value'],
-      lastCalculatedAt: new Date().toISOString()
+      createdAt: new Date(Date.now() - 86400000 * 9).toISOString()
     },
     {
       _id: 'wrk-3',
@@ -348,35 +316,19 @@ const seedInitialData = () => {
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #9011',
-        welfareFundContribution: 3100,
-        totalEarnings: 28900
+        welfareFundContribution: 0,
+        totalEarnings: 0
       },
       isAvailable: true,
       serviceRadius: 15,
       emergencyAvailable: true,
-      rating: 4.7,
-      reviewCount: 4,
-      completedJobs: 49,
+      rating: 5.0,
+      reviewCount: 0,
+      completedJobs: 0,
       activeWorkload: 0,
       bio: 'Licensed Wireman certified by State Electricity Board. Fast response for short circuits and home rewiring.',
       governmentIdRef: 'GOV-ID-ENC-3322',
-      
-      // AI Ranking
-      rank: 'Gold',
-      score: 72,
-      rankConfidence: 0.86,
-      positiveFeedbackPercentage: 75,
-      sentimentScore: 0.65,
-      rankSummary: 'Gold — 72/100: Good customer satisfaction and consistent performance across verified service tasks.',
-      rankBreakdown: {
-        ratingScore: 78.0,
-        sentimentScore: 75.0,
-        volumeScore: 85.0,
-        consistencyScore: 80.0,
-        reliabilityScore: 70.0
-      },
-      topCategories: ['Professionalism', 'Reliability', 'Service Quality'],
-      lastCalculatedAt: new Date().toISOString()
+      createdAt: new Date(Date.now() - 86400000 * 8).toISOString()
     },
     {
       _id: 'wrk-4',
@@ -402,35 +354,19 @@ const seedInitialData = () => {
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #6220',
-        welfareFundContribution: 4200,
-        totalEarnings: 41000
+        welfareFundContribution: 0,
+        totalEarnings: 0
       },
       isAvailable: true,
       serviceRadius: 10,
       emergencyAvailable: false,
-      rating: 4.8,
-      reviewCount: 4,
-      completedJobs: 71,
-      activeWorkload: 2,
+      rating: 5.0,
+      reviewCount: 0,
+      completedJobs: 0,
+      activeWorkload: 0,
       bio: 'Expert carpenter specializing in modular kitchen fittings, Godrej locks, and custom woodwork.',
       governmentIdRef: 'GOV-ID-ENC-1100',
-      
-      // AI Ranking
-      rank: 'Platinum',
-      score: 84,
-      rankConfidence: 0.90,
-      positiveFeedbackPercentage: 100,
-      sentimentScore: 0.85,
-      rankSummary: 'Platinum — 84/100: Highly dependable artisan with strong positive feedback (100% positive) and proven field reliability.',
-      rankBreakdown: {
-        ratingScore: 88.0,
-        sentimentScore: 86.0,
-        volumeScore: 100.0,
-        consistencyScore: 90.0,
-        reliabilityScore: 85.0
-      },
-      topCategories: ['Service Quality', 'Timeliness', 'Professionalism'],
-      lastCalculatedAt: new Date().toISOString()
+      createdAt: new Date(Date.now() - 86400000 * 7).toISOString()
     },
     {
       _id: 'wrk-5',
@@ -457,26 +393,19 @@ const seedInitialData = () => {
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #4432',
-        welfareFundContribution: 2900,
-        totalEarnings: 27800
+        welfareFundContribution: 0,
+        totalEarnings: 0
       },
       isAvailable: true,
       serviceRadius: 10,
       emergencyAvailable: false,
-      rating: 4.9,
-      reviewCount: 6,
-      completedJobs: 65,
+      rating: 5.0,
+      reviewCount: 0,
+      completedJobs: 0,
       activeWorkload: 0,
       bio: 'NSDC certified sanitization specialist with 6+ years in residential deep cleaning, kitchen degreasing, and upholstery care.',
       governmentIdRef: 'GOV-ID-ENC-7744',
-      rank: 'Diamond',
-      score: 91,
-      rankConfidence: 0.94,
-      positiveFeedbackPercentage: 100,
-      sentimentScore: 0.89,
-      rankSummary: 'Diamond — 91/100: Exceptional cleaning and deep hygiene quality with glowing customer reviews.',
-      topCategories: ['Service Quality', 'Thoroughness', 'Punctuality'],
-      lastCalculatedAt: new Date().toISOString()
+      createdAt: new Date(Date.now() - 86400000 * 6).toISOString()
     },
     {
       _id: 'wrk-6',
@@ -502,28 +431,21 @@ const seedInitialData = () => {
       welfareStatus: {
         insuranceActive: true,
         insurancePolicy: 'PM-SYM / Shramik Suraksha #5567',
-        welfareFundContribution: 3400,
-        totalEarnings: 31200
+        welfareFundContribution: 0,
+        totalEarnings: 0
       },
       isAvailable: true,
       serviceRadius: 12,
       emergencyAvailable: false,
-      rating: 4.8,
-      reviewCount: 4,
-      completedJobs: 48,
-      activeWorkload: 1,
+      rating: 5.0,
+      reviewCount: 0,
+      completedJobs: 0,
+      activeWorkload: 0,
       bio: 'Expert wall painter and waterproofing specialist. 9 years experience delivering flawless textures and weather-coat applications.',
       governmentIdRef: 'GOV-ID-ENC-9911',
-      rank: 'Platinum',
-      score: 82,
-      rankConfidence: 0.88,
-      positiveFeedbackPercentage: 100,
-      sentimentScore: 0.81,
-      rankSummary: 'Platinum — 82/100: High craftsmanship standard and steady customer satisfaction.',
-      topCategories: ['Craftsmanship', 'Finishing', 'Reliability'],
-      lastCalculatedAt: new Date().toISOString()
+      createdAt: new Date(Date.now() - 86400000 * 5).toISOString()
     },
-    // Seed Pending Verification Workers (For Admin Queue Demonstration)
+    // Seed Pending Verification Workers (For Admin Queue Review Workflow)
     {
       _id: 'wrk-pending-1',
       userId: 'usr-wrk-p1',
@@ -560,9 +482,7 @@ const seedInitialData = () => {
       activeWorkload: 0,
       bio: 'Experienced municipal and residential pipe fitter awaiting cooperative accreditation verification.',
       governmentIdRef: 'GOV-ID-SUBMITTED-8822',
-      rank: 'Unranked',
-      score: 0,
-      lastCalculatedAt: new Date().toISOString()
+      createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
     },
     {
       _id: 'wrk-pending-2',
@@ -600,270 +520,16 @@ const seedInitialData = () => {
       activeWorkload: 0,
       bio: 'Dedicated household assistance and kitchen support artisan with verified local references.',
       governmentIdRef: 'GOV-ID-SUBMITTED-4411',
-      rank: 'Unranked',
-      score: 0,
-      lastCalculatedAt: new Date().toISOString()
-    }
-  ];
-
-  // Seed Ratings with AI Sentiment metadata
-  ratings = [
-    {
-      _id: 'rate-1',
-      bookingId: 'bk-100',
-      customerId: 'usr-cust-1',
-      customerName: 'Rahul Deshmukh',
-      workerId: 'wrk-1',
-      stars: 5,
-      comment: 'Superb work! Arrived right on time and fixed the leaking brass pipe cleanly. Highly skilled and polite.',
-      sentiment: 'positive',
-      sentimentScore: 0.95,
-      confidence: 0.98,
-      categories: ['Service Quality', 'Timeliness', 'Professionalism'],
-      createdAt: new Date(Date.now() - 86400000 * 5).toISOString()
-    },
-    {
-      _id: 'rate-2',
-      bookingId: 'bk-99',
-      customerId: 'usr-cust-1',
-      customerName: 'Priya Joshi',
-      workerId: 'wrk-1',
-      stars: 5,
-      comment: 'Excellent plumbing service for our apartment flush tank. Very honest and reasonable rates.',
-      sentiment: 'positive',
-      sentimentScore: 0.92,
-      confidence: 0.96,
-      categories: ['Service Quality', 'Pricing & Value'],
-      createdAt: new Date(Date.now() - 86400000 * 4).toISOString()
-    },
-    {
-      _id: 'rate-3',
-      bookingId: 'bk-98',
-      customerId: 'usr-cust-1',
-      customerName: 'Amit Sharma',
-      workerId: 'wrk-1',
-      stars: 5,
-      comment: 'Fast emergency repair for kitchen sink water overflow. Cooperative verified artisan!',
-      sentiment: 'positive',
-      sentimentScore: 0.90,
-      confidence: 0.95,
-      categories: ['Timeliness', 'Reliability'],
-      createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
-    },
-    {
-      _id: 'rate-4',
-      bookingId: 'bk-97',
-      customerId: 'usr-cust-1',
-      customerName: 'Sneha Kulkarni',
-      workerId: 'wrk-1',
-      stars: 5,
-      comment: 'Clean installation of bathroom bib cock and washbasin tap. Perfect finish.',
-      sentiment: 'positive',
-      sentimentScore: 0.88,
-      confidence: 0.92,
-      categories: ['Service Quality'],
-      createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
-    },
-    {
-      _id: 'rate-5',
-      bookingId: 'bk-96',
-      customerId: 'usr-cust-1',
-      customerName: 'Sunil Rao',
-      workerId: 'wrk-1',
-      stars: 4,
-      comment: 'Good overall work, explained the problem clearly.',
-      sentiment: 'positive',
-      sentimentScore: 0.70,
-      confidence: 0.88,
-      categories: ['Communication'],
-      createdAt: new Date(Date.now() - 86400000 * 1).toISOString()
-    },
-    // Ratings for Suresh Patil (Platinum)
-    {
-      _id: 'rate-6',
-      bookingId: 'bk-95',
-      customerId: 'usr-cust-1',
-      customerName: 'Rohit Verma',
-      workerId: 'wrk-4',
-      stars: 5,
-      comment: 'Master carpentry work. Fixed our heavy Godrej door lock and drawer slider flawlessly.',
-      sentiment: 'positive',
-      sentimentScore: 0.92,
-      confidence: 0.94,
-      categories: ['Service Quality', 'Reliability'],
-      createdAt: new Date(Date.now() - 86400000 * 6).toISOString()
-    },
-    {
-      _id: 'rate-7',
-      bookingId: 'bk-94',
-      customerId: 'usr-cust-1',
-      customerName: 'Kavita Mehta',
-      workerId: 'wrk-4',
-      stars: 5,
-      comment: 'Very polite carpenter. Completed wardrobe hinge alignment with great care.',
-      sentiment: 'positive',
-      sentimentScore: 0.85,
-      confidence: 0.90,
-      categories: ['Professionalism', 'Service Quality'],
-      createdAt: new Date(Date.now() - 86400000 * 4).toISOString()
-    },
-    {
-      _id: 'rate-8',
-      bookingId: 'bk-93',
-      customerId: 'usr-cust-1',
-      customerName: 'Vikas Patil',
-      workerId: 'wrk-4',
-      stars: 5,
-      comment: 'Punctual arrival and fair charges.',
-      sentiment: 'positive',
-      sentimentScore: 0.80,
-      confidence: 0.85,
-      categories: ['Timeliness', 'Pricing & Value'],
-      createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
-    },
-    {
-      _id: 'rate-9',
-      bookingId: 'bk-92',
-      customerId: 'usr-cust-1',
-      customerName: 'Ananya Roy',
-      workerId: 'wrk-4',
-      stars: 4,
-      comment: 'Solid woodwork repair, very cooperative.',
-      sentiment: 'positive',
-      sentimentScore: 0.70,
-      confidence: 0.85,
-      categories: ['Service Quality'],
-      createdAt: new Date(Date.now() - 86400000 * 1).toISOString()
-    },
-    // Ratings for Anil Kamble (Gold)
-    {
-      _id: 'rate-10',
-      bookingId: 'bk-91',
-      customerId: 'usr-cust-1',
-      customerName: 'Deepak Naik',
-      workerId: 'wrk-3',
-      stars: 5,
-      comment: 'Quickly fixed the MCB tripping issue in our kitchen circuit.',
-      sentiment: 'positive',
-      sentimentScore: 0.85,
-      confidence: 0.90,
-      categories: ['Service Quality', 'Timeliness'],
-      createdAt: new Date(Date.now() - 86400000 * 4).toISOString()
-    },
-    {
-      _id: 'rate-11',
-      bookingId: 'bk-90',
-      customerId: 'usr-cust-1',
-      customerName: 'Meera Deshpande',
-      workerId: 'wrk-3',
-      stars: 5,
-      comment: 'Polite electrician, installed ceiling fan properly.',
-      sentiment: 'positive',
-      sentimentScore: 0.80,
-      confidence: 0.85,
-      categories: ['Professionalism'],
-      createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
-    },
-    {
-      _id: 'rate-12',
-      bookingId: 'bk-89',
-      customerId: 'usr-cust-1',
-      customerName: 'Girish Sawant',
-      workerId: 'wrk-3',
-      stars: 4,
-      comment: 'Good work on inverter connection.',
-      sentiment: 'positive',
-      sentimentScore: 0.60,
-      confidence: 0.80,
-      categories: ['Service Quality'],
-      createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
-    },
-    {
-      _id: 'rate-13',
-      bookingId: 'bk-88',
-      customerId: 'usr-cust-1',
-      customerName: 'Sanjay Jadhav',
-      workerId: 'wrk-3',
-      stars: 4,
-      comment: 'Satisfied with switchboard replacement.',
-      sentiment: 'positive',
-      sentimentScore: 0.60,
-      confidence: 0.80,
-      categories: ['Customer Satisfaction'],
-      createdAt: new Date(Date.now() - 86400000 * 1).toISOString()
-    },
-    // Ratings for Ganesh More (Silver)
-    {
-      _id: 'rate-14',
-      bookingId: 'bk-87',
-      customerId: 'usr-cust-1',
-      customerName: 'Nitin Gore',
-      workerId: 'wrk-2',
-      stars: 4,
-      comment: 'Repaired geyser thermostat, took some time but solved the issue.',
-      sentiment: 'neutral',
-      sentimentScore: 0.30,
-      confidence: 0.75,
-      categories: ['Service Quality'],
-      createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
-    },
-    {
-      _id: 'rate-15',
-      bookingId: 'bk-86',
-      customerId: 'usr-cust-1',
-      customerName: 'Ravi Pawar',
-      workerId: 'wrk-2',
-      stars: 4,
-      comment: 'Affordable rates, friendly person.',
-      sentiment: 'positive',
-      sentimentScore: 0.65,
-      confidence: 0.80,
-      categories: ['Pricing & Value', 'Communication'],
-      createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
-    },
-    {
-      _id: 'rate-16',
-      bookingId: 'bk-85',
-      customerId: 'usr-cust-1',
-      customerName: 'Suresh B.',
-      workerId: 'wrk-2',
-      stars: 3,
-      comment: 'Arrived a bit late due to traffic, but completed tap replacement.',
-      sentiment: 'neutral',
-      sentimentScore: 0.10,
-      confidence: 0.80,
-      categories: ['Timeliness'],
       createdAt: new Date(Date.now() - 86400000 * 1).toISOString()
     }
   ];
 
-  // Initial Sample Booking
-  bookings = [
-    {
-      _id: 'bk-101',
-      bookingId: 'BK-2026-001',
-      customerId: 'usr-cust-1',
-      customerName: 'Rahul Deshmukh',
-      customerPhone: '9876543210',
-      workerId: 'wrk-1',
-      workerName: 'Santosh Shinde',
-      workerPhone: '9822011223',
-      serviceCategory: 'Plumber',
-      serviceTitle: 'Plumbing Services',
-      requirement: 'Kitchen sink tap leaking and low water pressure in washbasin',
-      location: 'Flat 402, Anand Park, Kothrud, Pune',
-      date: '2026-09-12',
-      timeSlot: 'Morning (09:00 AM - 12:00 PM)',
-      amount: 349,
-      isEmergency: false,
-      status: 'ACCEPTED',
-      paymentStatus: 'PENDING',
-      isRated: false,
-      createdAt: new Date(Date.now() - 3600000).toISOString()
-    }
-  ];
+  // No hardcoded bookings, payments or ratings: starts completely clean
+  bookings = [];
+  payments = [];
+  ratings = [];
 
-  console.log('[Seed Engine]: Synchronous seed data initialized with demo customers, cooperative workers, rich AI ratings & ranks.');
+  console.log('[Seed Engine]: Synchronous seed data initialized with verified artisans and pending verification queue.');
 };
 
 seedInitialData();

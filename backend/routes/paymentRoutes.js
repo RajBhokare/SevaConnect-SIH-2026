@@ -4,6 +4,7 @@ const { processPayment, getPaymentByBooking } = require('../controllers/paymentC
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/simulate', protect, processPayment);
+router.post('/process', protect, processPayment);
 router.get('/booking/:bookingId', protect, getPaymentByBooking);
 
 module.exports = router;

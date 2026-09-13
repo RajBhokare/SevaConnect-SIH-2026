@@ -15,18 +15,18 @@ const calculateFallbackRank = (worker, ratings, bookings = []) => {
   const avgRating = worker.rating || 5.0;
   const completedJobs = worker.completedJobs || totalReviews;
 
-  if (totalReviews < 3) {
+  if (totalReviews === 0) {
     return {
       providerId: worker._id,
       name: worker.name,
       rank: 'Unranked',
       score: 0,
-      rankConfidence: Number((totalReviews / 3.0).toFixed(2)),
+      rankConfidence: 0.50,
       averageRating: avgRating,
-      totalReviews,
-      positiveFeedbackPercentage: avgRating >= 4 ? 100 : 50,
+      totalReviews: 0,
+      positiveFeedbackPercentage: 100,
       sentimentScore: 0.0,
-      rankSummary: 'New Service Provider (Insufficient reviews to establish performance tier; minimum 3 required).',
+      rankSummary: 'New Service Provider (Awaiting initial customer service reviews).',
       breakdown: {
         ratingScore: 0,
         sentimentScore: 0,

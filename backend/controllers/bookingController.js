@@ -1,4 +1,5 @@
 const store = require('../config/store');
+const { COMMISSION_RATE } = require('../config/constants');
 
 // Create new service request
 const createBooking = async (req, res) => {
@@ -25,6 +26,8 @@ const createBooking = async (req, res) => {
     }
 
     const bookingId = `BK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const parsedAmount = Number(amount) || worker.hourlyRate || 299;
+
     const newBooking = {
       _id: `bk-${Date.now()}`,
       bookingId,
@@ -40,7 +43,11 @@ const createBooking = async (req, res) => {
       location: location || req.user.location || 'Pune',
       date: date || new Date().toISOString().split('T')[0],
       timeSlot: timeSlot || (isEmergency ? 'Immediate / Emergency' : 'Morning (09:00 AM - 12:00 PM)'),
-      amount: Number(amount) || worker.hourlyRate || 299,
+      amount: parsedAmount,
+      commissionRate: COMMISSION_RATE,
+      commissionAmount: 0,
+      workerEarning: 0,
+      completedAt: null,
       isEmergency: Boolean(isEmergency),
       status: 'REQUESTED',
       paymentStatus: 'PENDING',
@@ -87,7 +94,7 @@ const getWorkerBookings = async (req, res) => {
   }
 };
 
-// Update booking status directly (State transitions)
+// Update booking status directly (State transitions with 10% commission calculation)
 const updateBookingStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -109,23 +116,38 @@ const updateBookingStatus = async (req, res) => {
 
     const worker = store.workers.find(w => w._id === booking.workerId);
 
-    // Update worker workload & completed stats on state transitions
-    if (worker) {
-      if (status === 'ACCEPTED' || status === 'IN_PROGRESS') {
-        if (previousStatus === 'REQUESTED') {
-          worker.activeWorkload = (worker.activeWorkload || 0) + 1;
-        }
-      } else if (status === 'COMPLETED') {
-        if (previousStatus !== 'COMPLETED') {
+    // Strict Commission Accounting: Recognized ONLY when COMPLETED
+    if (status === 'COMPLETED') {
+      if (previousStatus !== 'COMPLETED') {
+        booking.commissionRate = COMMISSION_RATE;
+        booking.commissionAmount = Math.round((booking.amount * COMMISSION_RATE) * 100) / 100;
+        booking.workerEarning = Math.round((booking.amount - booking.commissionAmount) * 100) / 100;
+        booking.completedAt = new Date().toISOString();
+
+        if (worker) {
           worker.activeWorkload = Math.max(0, (worker.activeWorkload || 1) - 1);
           worker.completedJobs = (worker.completedJobs || 0) + 1;
           if (worker.welfareStatus) {
-            worker.welfareStatus.totalEarnings = (worker.welfareStatus.totalEarnings || 0) + booking.amount;
+            worker.welfareStatus.totalEarnings = (worker.welfareStatus.totalEarnings || 0) + booking.workerEarning;
           }
         }
-      } else if (status === 'DECLINED' || status === 'CANCELLED') {
-        if (previousStatus === 'ACCEPTED' || previousStatus === 'IN_PROGRESS') {
-          worker.activeWorkload = Math.max(0, (worker.activeWorkload || 1) - 1);
+      }
+    } else {
+      // Incomplete or cancelled bookings earn ₹0 commission and ₹0 worker payout
+      booking.commissionRate = COMMISSION_RATE;
+      booking.commissionAmount = 0;
+      booking.workerEarning = 0;
+      booking.completedAt = null;
+
+      if (worker) {
+        if (status === 'ACCEPTED' || status === 'IN_PROGRESS') {
+          if (previousStatus === 'REQUESTED') {
+            worker.activeWorkload = (worker.activeWorkload || 0) + 1;
+          }
+        } else if (status === 'DECLINED' || status === 'CANCELLED') {
+          if (previousStatus === 'ACCEPTED' || previousStatus === 'IN_PROGRESS') {
+            worker.activeWorkload = Math.max(0, (worker.activeWorkload || 1) - 1);
+          }
         }
       }
     }
@@ -153,10 +175,75 @@ const getBookingById = async (req, res) => {
   }
 };
 
+// Admin: Platform-wide Overview Statistics from Real Database / Store
+const getAdminOverview = async (req, res) => {
+  try {
+    const totalWorkers = store.workers.length;
+    const verifiedWorkers = store.workers.filter(w => (w.verificationStatus === 'VERIFIED' || w.verificationStatus === 'APPROVED') && w.isListed !== false).length;
+    const pendingVerification = store.workers.filter(w => w.verificationStatus === 'PENDING').length;
+    const totalCustomers = store.users.filter(u => u.role === 'CUSTOMER').length;
+    const totalBookings = store.bookings.length;
+    const completedBookings = store.bookings.filter(b => b.status === 'COMPLETED').length;
+
+    res.json({
+      totalWorkers,
+      verifiedWorkers,
+      pendingVerification,
+      totalCustomers,
+      totalBookings,
+      completedBookings
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching admin overview statistics.' });
+  }
+};
+
+// Admin: Commission & Financial Overview from Real Completed Bookings Only
+const getAdminCommissionStats = async (req, res) => {
+  try {
+    const completedList = store.bookings.filter(b => b.status === 'COMPLETED');
+
+    const completedServiceValue = completedList.reduce((sum, b) => sum + (Number(b.amount) || 0), 0);
+    const commissionAmount = completedList.reduce((sum, b) => sum + (b.commissionAmount !== undefined ? b.commissionAmount : Math.round((b.amount * COMMISSION_RATE) * 100) / 100), 0);
+    const workerEarnings = completedList.reduce((sum, b) => sum + (b.workerEarning !== undefined ? b.workerEarning : Math.round((b.amount * (1 - COMMISSION_RATE)) * 100) / 100), 0);
+    const completedBookingsCount = completedList.length;
+
+    const transactions = completedList.map(b => ({
+      _id: b._id,
+      bookingId: b.bookingId,
+      serviceTitle: b.serviceTitle,
+      serviceCategory: b.serviceCategory,
+      workerId: b.workerId,
+      workerName: b.workerName,
+      customerName: b.customerName,
+      amount: b.amount,
+      commissionRate: b.commissionRate || COMMISSION_RATE,
+      commissionAmount: b.commissionAmount !== undefined ? b.commissionAmount : Math.round((b.amount * COMMISSION_RATE) * 100) / 100,
+      workerEarning: b.workerEarning !== undefined ? b.workerEarning : Math.round((b.amount * (1 - COMMISSION_RATE)) * 100) / 100,
+      paymentStatus: b.paymentStatus,
+      completedAt: b.completedAt || b.updatedAt || b.createdAt,
+      createdAt: b.createdAt
+    }));
+
+    res.json({
+      commissionRate: COMMISSION_RATE,
+      completedServiceValue,
+      commissionAmount,
+      workerEarnings,
+      completedBookingsCount,
+      transactions
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching commission statistics.' });
+  }
+};
+
 module.exports = {
   createBooking,
   getCustomerBookings,
   getWorkerBookings,
   updateBookingStatus,
-  getBookingById
+  getBookingById,
+  getAdminOverview,
+  getAdminCommissionStats
 };

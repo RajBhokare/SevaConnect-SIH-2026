@@ -126,7 +126,11 @@ const getWorkerDashboard = async (req, res) => {
     const activeJobs = workerBookings.filter(b => b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS');
     const completedJobs = workerBookings.filter(b => b.status === 'COMPLETED');
 
-    const totalEarnings = completedJobs.reduce((acc, curr) => acc + (curr.amount || 0), worker.welfareStatus?.totalEarnings || 0);
+    // Real earnings derived strictly from completed bookings (after 10% cooperative commission)
+    const totalEarnings = completedJobs.reduce((acc, curr) => {
+      const earning = curr.workerEarning !== undefined ? curr.workerEarning : Math.round((curr.amount * 0.90) * 100) / 100;
+      return acc + earning;
+    }, 0);
 
     res.json({
       worker: sanitizeWorker(worker),
@@ -134,12 +138,14 @@ const getWorkerDashboard = async (req, res) => {
         totalEarnings,
         rating: worker.rating,
         reviewCount: worker.reviewCount,
-        completedCount: worker.completedJobs + completedJobs.length,
+        completedCount: completedJobs.length,
         pendingCount: pendingRequests.length,
         activeCount: activeJobs.length,
         isAvailable: worker.isAvailable
       },
       activeJob: activeJobs.length > 0 ? activeJobs[0] : null,
+      activeBookings: activeJobs,
+      recentCompleted: completedJobs,
       pendingRequests
     });
   } catch (error) {
@@ -155,17 +161,24 @@ const getWelfareDetails = async (req, res) => {
       return res.status(404).json({ message: 'Worker profile not found.' });
     }
 
+    const workerBookings = store.bookings.filter(b => b.workerId === worker._id);
+    const completedJobs = workerBookings.filter(b => b.status === 'COMPLETED');
+    const totalEarnings = completedJobs.reduce((acc, curr) => {
+      const earning = curr.workerEarning !== undefined ? curr.workerEarning : Math.round((curr.amount * 0.90) * 100) / 100;
+      return acc + earning;
+    }, 0);
+
     res.json({
       workerName: worker.name,
       cooperativeName: worker.cooperativeName,
       cooperativeMemberId: worker.cooperativeMemberId,
       verificationStatus: worker.verificationStatus,
       certificationStatus: worker.certificationStatus,
-      welfareStatus: worker.welfareStatus || {
-        insuranceActive: true,
-        insurancePolicy: 'PM-SYM / Shramik Suraksha #7782',
-        welfareFundContribution: 3850,
-        totalEarnings: 34200
+      welfareStatus: {
+        insuranceActive: worker.welfareStatus?.insuranceActive ?? true,
+        insurancePolicy: worker.welfareStatus?.insurancePolicy || `PM-SYM / Shramik Suraksha #${Math.floor(1000 + Math.random() * 9000)}`,
+        welfareFundContribution: Math.round((totalEarnings * 0.05) * 100) / 100, // 5% welfare savings
+        totalEarnings
       },
       benefits: [
         { title: 'Accidental Disability Cover', coverage: 'Up to ₹2,00,000', status: 'Active' },
@@ -179,7 +192,7 @@ const getWelfareDetails = async (req, res) => {
   }
 };
 
-// Admin: Get Worker Verification Queue
+// Admin: Get Worker Verification Queue (Prioritizes PENDING submissions first)
 const getAdminVerificationQueue = async (req, res) => {
   try {
     const { status } = req.query;
@@ -188,6 +201,15 @@ const getAdminVerificationQueue = async (req, res) => {
     if (status && status !== 'ALL') {
       list = list.filter(w => w.verificationStatus === status);
     }
+
+    // Sort: PENDING applications first (sorted newest first), then other statuses (newest first)
+    list = [...list].sort((a, b) => {
+      const isAPending = a.verificationStatus === 'PENDING';
+      const isBPending = b.verificationStatus === 'PENDING';
+      if (isAPending && !isBPending) return -1;
+      if (!isAPending && isBPending) return 1;
+      return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    });
 
     // Return workers with verification details (mask government ID partially for admin inspection)
     const queue = list.map(w => ({

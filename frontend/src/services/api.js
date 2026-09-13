@@ -85,4 +85,10 @@ export const aiApi = {
   getHealth: () => axios.get('/ai/health')
 };
 
+// Admin Platform & Commission APIs
+export const adminApi = {
+  getOverview: () => api.get('/bookings/admin/overview'),
+  getCommissionStats: () => api.get('/bookings/admin/commission')
+};
+
 export default api;

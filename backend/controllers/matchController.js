@@ -69,9 +69,9 @@ const getFairMatchRecommendations = async (req, res) => {
     // 2. Score and Rank eligible workers
     const scoredWorkers = eligibleWorkers.map(worker => {
       const distance = calculateDistanceKm(userCoords, worker.coordinates || userCoords);
-      const activeWorkload = worker.activeWorkload || 0;
+      const activeWorkload = store.bookings.filter(b => b.workerId === worker._id && (b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS')).length;
       const experience = worker.experience || 1;
-      const rating = worker.rating || 4.5;
+      const rating = typeof worker.rating === 'number' ? worker.rating : 5.0;
 
       // Proximity score (0 to 100, max at 0km, 0 at 20km)
       const distanceScore = Math.max(0, 100 - (distance * 5));

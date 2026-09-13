@@ -5,13 +5,20 @@ const {
   getCustomerBookings,
   getWorkerBookings,
   updateBookingStatus,
-  getBookingById
+  getBookingById,
+  getAdminOverview,
+  getAdminCommissionStats
 } = require('../controllers/bookingController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, requireRole } = require('../middleware/authMiddleware');
 
 router.post('/', protect, createBooking);
 router.get('/customer', protect, getCustomerBookings);
 router.get('/worker', protect, getWorkerBookings);
+
+// Admin Financial & Platform Overview Endpoints
+router.get('/admin/overview', protect, requireRole(['ADMIN', 'COOPERATIVE_ADMIN']), getAdminOverview);
+router.get('/admin/commission', protect, requireRole(['ADMIN', 'COOPERATIVE_ADMIN']), getAdminCommissionStats);
+
 router.get('/:id', protect, getBookingById);
 router.patch('/:id/status', protect, updateBookingStatus);
 

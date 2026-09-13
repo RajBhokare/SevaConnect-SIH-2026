@@ -117,19 +117,19 @@ def calculate_provider_rank(
     completed_jobs = worker.get("completedJobs", total_reviews)
     avg_rating = float(worker.get("rating", 5.0))
 
-    # Edge Case: Under 3 reviews -> Not enough data to reliably rank
-    if total_reviews < 3:
+    # Edge Case: 0 reviews -> Initial awaiting state
+    if total_reviews == 0:
         return {
             "providerId": worker.get("_id"),
             "name": worker.get("name"),
             "rank": "Unranked",
             "score": 0,
-            "rankConfidence": round(total_reviews / 3.0, 2),
+            "rankConfidence": 0.50,
             "averageRating": avg_rating,
-            "totalReviews": total_reviews,
+            "totalReviews": 0,
             "positiveFeedbackPercentage": 100 if avg_rating >= 4 else 50,
             "sentimentScore": 0.0,
-            "rankSummary": "New Service Provider (Insufficient reviews to establish performance tier; minimum 3 required).",
+            "rankSummary": "New Service Provider (Awaiting initial customer service reviews).",
             "breakdown": {
                 "ratingScore": 0,
                 "sentimentScore": 0,

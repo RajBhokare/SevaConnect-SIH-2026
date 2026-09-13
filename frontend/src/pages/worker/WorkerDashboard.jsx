@@ -208,7 +208,7 @@ export function WorkerDashboard() {
         <Card className="p-4 sm:p-5 border-slate-200/90 shadow-xs space-y-1 bg-white">
           <p className="text-xs font-semibold text-slate-500">Total Earnings (Floor Wages)</p>
           <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            {formatINR(dashboardData?.stats?.totalEarnings || 4280)}
+            {formatINR(dashboardData?.stats?.totalEarnings ?? 0)}
           </p>
           <p className="text-[11px] text-success-700 font-medium flex items-center gap-1">
             <CheckCircle2 className="w-3 h-3" /> Direct Bank Credit
@@ -218,7 +218,7 @@ export function WorkerDashboard() {
         <Card className="p-4 sm:p-5 border-slate-200/90 shadow-xs space-y-1 bg-white">
           <p className="text-xs font-semibold text-slate-500">Welfare Fund Balance</p>
           <p className="text-xl sm:text-2xl font-black text-primary-900 tracking-tight">
-            {formatINR(worker?.welfareStatus?.welfareFundContribution || 1500)}
+            {formatINR(worker?.welfareStatus?.welfareFundContribution ?? 0)}
           </p>
           <p className="text-[11px] text-primary-800 font-medium">
             Medical & Pension Shield
@@ -229,7 +229,7 @@ export function WorkerDashboard() {
           <p className="text-xs font-semibold text-slate-500">Customer Rating</p>
           <div className="flex items-center gap-1.5">
             <span className="text-xl sm:text-2xl font-black text-slate-900">
-              {worker?.rating?.toFixed(1) || '4.9'}
+              {typeof worker?.rating === 'number' ? worker.rating.toFixed(1) : '5.0'}
             </span>
             <div className="flex items-center gap-0.5">
               {[...Array(5)].map((_, i) => (
@@ -237,13 +237,13 @@ export function WorkerDashboard() {
               ))}
             </div>
           </div>
-          <p className="text-[11px] text-slate-500">{worker?.reviewCount || 58} verified reviews</p>
+          <p className="text-[11px] text-slate-500">{worker?.reviewCount ?? 0} verified reviews</p>
         </Card>
 
         <Card className="p-4 sm:p-5 border-slate-200/90 shadow-xs space-y-1 bg-white">
           <p className="text-xs font-semibold text-slate-500">Completed Jobs</p>
           <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            {worker?.completedJobs || 12}
+            {dashboardData?.stats?.completedCount ?? worker?.completedJobs ?? 0}
           </p>
           <p className="text-[11px] text-slate-500 font-medium">100% Floor Compliant</p>
         </Card>
@@ -348,6 +348,30 @@ export function WorkerDashboard() {
           </div>
         )}
       </section>
+
+      {/* 5. Recently Completed Gigs */}
+      {recentCompleted.length > 0 && (
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <span>Completed Service Jobs</span>
+              <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-success-50 text-success-700 border border-success-200">
+                {recentCompleted.length} Completed
+              </span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {recentCompleted.map((booking) => (
+              <BookingCard
+                key={booking._id}
+                booking={booking}
+                userRole="WORKER"
+                onViewInvoice={setSelectedInvoiceBooking}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Digital Tax Invoice View Modal */}
       {selectedInvoiceBooking && (

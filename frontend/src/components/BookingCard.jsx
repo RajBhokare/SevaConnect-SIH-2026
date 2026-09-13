@@ -23,6 +23,7 @@ const STATUS_STEPS = ['REQUESTED', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED'];
 export function BookingCard({
   booking,
   userRole = 'CUSTOMER',
+  isWorkerView = false,
   onAccept,
   onDecline,
   onStartService,
@@ -34,9 +35,11 @@ export function BookingCard({
 }) {
   if (!booking) return null;
 
-  const isWorker = userRole === 'WORKER';
+  const isWorker = userRole === 'WORKER' || isWorkerView === true;
   const isEmergency = booking.isEmergency;
   const currentStepIndex = STATUS_STEPS.indexOf(booking.status);
+  const isPaid = booking.paymentStatus === 'PAID' || booking.paymentSettled === true;
+  const isRated = booking.isRated === true || booking.rated === true;
 
   return (
     <Card className={`overflow-hidden transition-all bg-white border-slate-200/90 shadow-xs flex flex-col justify-between text-left ${isEmergency ? 'border-red-300' : ''}`}>
@@ -104,7 +107,7 @@ export function BookingCard({
           <div className="flex items-center gap-2 truncate">
             <User className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
             <span className="truncate">
-              <strong className="text-slate-900 font-medium">{isWorker ? 'Customer: ' : 'Worker: '}</strong>
+              <strong className="text-slate-900 font-medium">{isWorker ? 'Customer: ' : 'Artisan: '}</strong>
               {isWorker ? booking.customerName : booking.workerName}
             </span>
           </div>
@@ -126,77 +129,116 @@ export function BookingCard({
         </div>
 
         {/* Amount & Settlement Status */}
-        <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-          <span className="text-slate-500 font-medium">Standard Payable:</span>
-          <span className="text-base font-black text-slate-900">{formatINR(booking.amount || 299)}</span>
+        <div className="pt-3 border-t border-slate-100 flex flex-col gap-1.5 text-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-slate-500 font-medium">Standard Service Payable:</span>
+            <span className="text-base font-black text-slate-900">{formatINR(booking.amount || 299)}</span>
+          </div>
+          {booking.status === 'COMPLETED' && (
+            <div className="flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg border border-slate-100">
+              <span>Worker Payout (90% Floor): <strong className="text-success-700">{formatINR(booking.workerEarning ?? Math.round((booking.amount || 299) * 0.90))}</strong></span>
+              <span>Coop Margin (10%): <strong className="text-primary-800">{formatINR(booking.commissionAmount ?? Math.round((booking.amount || 299) * 0.10))}</strong></span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Action Footer */}
-      <div className="p-4 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center justify-end gap-2">
-        {/* Worker Actions */}
-        {isWorker && (
-          <>
-            {booking.status === 'PENDING' && (
-              <>
-                <Button size="sm" variant="outline" onClick={() => onDecline && onDecline(booking)}>
-                  Decline
-                </Button>
-                <Button size="sm" variant="primary" onClick={() => onAccept && onAccept(booking)} className="font-bold">
-                  <Check className="w-3.5 h-3.5 mr-1" /> Accept Job
-                </Button>
-              </>
-            )}
+      <div className="p-4 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+        {/* Badges on left */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {booking.status === 'COMPLETED' && (
+            <>
+              {isPaid ? (
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-success-700 bg-success-50 px-2.5 py-0.5 rounded-full border border-success-200">
+                  <CheckCircle2 className="w-3 h-3 text-success-600" /> Payment Settled
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                  <Clock className="w-3 h-3 text-amber-600" /> Payment Pending
+                </span>
+              )}
 
-            {booking.status === 'ACCEPTED' && (
-              <Button size="sm" variant="primary" onClick={() => onStartService && onStartService(booking)} className="font-bold">
-                Mark Arrived & In-Progress
-              </Button>
-            )}
+              {isRated && (
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-primary-800 bg-primary-50 px-2 py-0.5 rounded-full border border-primary-200">
+                  <Star className="w-3 h-3 text-amber-500 fill-amber-500" /> Rated
+                </span>
+              )}
+            </>
+          )}
+        </div>
 
-            {booking.status === 'IN_PROGRESS' && (
-              <Button size="sm" variant="success" onClick={() => onCompleteService && onCompleteService(booking)} className="font-bold">
-                <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Mark Complete
-              </Button>
-            )}
-
-            {booking.status === 'COMPLETED' && (
-              <Button size="sm" variant="outline" onClick={() => onViewInvoice && onViewInvoice(booking)} className="font-semibold text-slate-700">
-                <FileText className="w-3.5 h-3.5 mr-1" /> View Digital Invoice
-              </Button>
-            )}
-          </>
-        )}
-
-        {/* Customer Actions */}
-        {!isWorker && (
-          <>
-            {booking.status === 'PENDING' && (
-              <Button size="sm" variant="ghost" onClick={() => onCancel && onCancel(booking)} className="text-danger-600 hover:text-danger-700 font-semibold text-xs">
-                Cancel Request
-              </Button>
-            )}
-
-            {booking.status === 'COMPLETED' && !booking.paymentSettled && (
-              <Button size="sm" variant="primary" onClick={() => onPay && onPay(booking)} className="font-bold">
-                <CreditCard className="w-3.5 h-3.5 mr-1" /> Settle Payment
-              </Button>
-            )}
-
-            {booking.status === 'COMPLETED' && (
-              <>
-                <Button size="sm" variant="outline" onClick={() => onViewInvoice && onViewInvoice(booking)} className="font-semibold text-slate-700">
-                  <FileText className="w-3.5 h-3.5 mr-1" /> Tax Invoice
-                </Button>
-                {!booking.rated && (
-                  <Button size="sm" variant="outline" onClick={() => onRate && onRate(booking)} className="font-semibold text-primary-900 border-primary-300">
-                    <Star className="w-3.5 h-3.5 mr-1 text-amber-500 fill-amber-500" /> Rate Artisan
+        {/* Buttons on right */}
+        <div className="flex items-center gap-2 flex-wrap ml-auto">
+          {/* Worker Actions */}
+          {isWorker && (
+            <>
+              {(booking.status === 'REQUESTED' || booking.status === 'PENDING') && (
+                <>
+                  <Button size="sm" variant="outline" onClick={() => onDecline && onDecline(booking)}>
+                    Decline
                   </Button>
-                )}
-              </>
-            )}
-          </>
-        )}
+                  <Button size="sm" variant="primary" onClick={() => onAccept && onAccept(booking)} className="font-bold">
+                    <Check className="w-3.5 h-3.5 mr-1" /> Accept Job
+                  </Button>
+                </>
+              )}
+
+              {booking.status === 'ACCEPTED' && (
+                <>
+                  <Button size="sm" variant="outline" onClick={() => onStartService && onStartService(booking)} className="font-medium text-slate-700">
+                    Mark In-Progress
+                  </Button>
+                  <Button size="sm" variant="success" onClick={() => onCompleteService && onCompleteService(booking)} className="font-bold shadow-xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-white" /> Complete & Done
+                  </Button>
+                </>
+              )}
+
+              {booking.status === 'IN_PROGRESS' && (
+                <Button size="sm" variant="success" onClick={() => onCompleteService && onCompleteService(booking)} className="font-bold shadow-xs">
+                  <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-white" /> Mark Service Completed
+                </Button>
+              )}
+
+              {booking.status === 'COMPLETED' && (
+                <Button size="sm" variant="outline" onClick={() => onViewInvoice && onViewInvoice(booking)} className="font-semibold text-slate-700">
+                  <FileText className="w-3.5 h-3.5 mr-1" /> View Invoice
+                </Button>
+              )}
+            </>
+          )}
+
+          {/* Customer Actions */}
+          {!isWorker && (
+            <>
+              {(booking.status === 'REQUESTED' || booking.status === 'PENDING') && (
+                <Button size="sm" variant="ghost" onClick={() => onCancel && onCancel(booking)} className="text-danger-600 hover:text-danger-700 font-semibold text-xs">
+                  Cancel Request
+                </Button>
+              )}
+
+              {booking.status === 'COMPLETED' && !isPaid && (
+                <Button size="sm" variant="primary" onClick={() => onPay && onPay(booking)} className="font-bold shadow-xs">
+                  <CreditCard className="w-3.5 h-3.5 mr-1" /> Settle Payment
+                </Button>
+              )}
+
+              {booking.status === 'COMPLETED' && (
+                <>
+                  <Button size="sm" variant="outline" onClick={() => onViewInvoice && onViewInvoice(booking)} className="font-semibold text-slate-700">
+                    <FileText className="w-3.5 h-3.5 mr-1" /> Tax Invoice
+                  </Button>
+                  {!isRated && (
+                    <Button size="sm" variant="outline" onClick={() => onRate && onRate(booking)} className="font-semibold text-primary-900 border-primary-300 bg-primary-50/50 hover:bg-primary-50">
+                      <Star className="w-3.5 h-3.5 mr-1 text-amber-500 fill-amber-500" /> Rate Artisan
+                    </Button>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </Card>
   );
