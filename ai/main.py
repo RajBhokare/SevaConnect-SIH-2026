@@ -52,10 +52,6 @@ class BatchRankRequest(BaseModel):
     all_ratings: List[Dict[str, Any]] = Field(default=[])
     all_bookings: Optional[List[Dict[str, Any]]] = Field(default=[])
 
-# Backward compatibility request
-class SimpleRankRequest(BaseModel):
-    rating: float = Field(default=5.0)
-    reviews: List[str] = Field(default=[])
 
 @router.get("/health")
 def health_check():
@@ -158,21 +154,7 @@ def rank_all_providers(req: BatchRankRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Backward compatibility route
-@router.post("/rank")
-def rank_worker_compat(req: SimpleRankRequest):
-    dummy_worker = {"_id": "dummy", "name": "Provider", "rating": req.rating, "completedJobs": max(len(req.reviews), 10)}
-    dummy_ratings = [{"stars": int(round(req.rating)), "comment": r} for r in req.reviews]
-    if len(dummy_ratings) < 3:
-        # Fill minimum dummy ratings for simple route
-        dummy_ratings.extend([{"stars": int(round(req.rating)), "comment": "Good job"} for _ in range(3 - len(dummy_ratings))])
-    res = calculate_provider_rank(dummy_worker, dummy_ratings)
-    return {
-        "rank": res["rank"],
-        "final_score": res["score"],
-        "original_rating": req.rating,
-        "sentiment_adjustment": res["sentimentScore"]
-    }
+
 
 # Register routes at both root and /ai prefix
 app.include_router(router)

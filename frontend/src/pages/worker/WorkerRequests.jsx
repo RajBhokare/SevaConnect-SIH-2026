@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { bookingApi } from '../../services/api';
 import { BookingCard } from '../../components/BookingCard';
+import { ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import { Clock, CheckCircle2, Play, AlertCircle } from 'lucide-react';
 
@@ -17,7 +18,7 @@ export function WorkerRequests() {
     try {
       setLoading(true);
       const res = await bookingApi.getWorkerBookings();
-      setBookings(res.data || []);
+      setBookings(ensureArray(res?.data));
     } catch (err) {
       toast.error('Failed to load worker requests.');
     } finally {
@@ -65,7 +66,7 @@ export function WorkerRequests() {
     }
   };
 
-  const filteredBookings = bookings.filter((b) => {
+  const filteredBookings = ensureArray(bookings).filter((b) => {
     if (activeTab === 'PENDING') return b.status === 'REQUESTED';
     if (activeTab === 'ACTIVE') return b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS';
     if (activeTab === 'COMPLETED') return b.status === 'COMPLETED';
@@ -113,7 +114,7 @@ export function WorkerRequests() {
           <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p className="text-xs text-slate-500">Loading service requests...</p>
         </div>
-      ) : filteredBookings.length === 0 ? (
+      ) : !Array.isArray(filteredBookings) || filteredBookings.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 space-y-3">
           <Clock className="w-10 h-10 text-slate-400 mx-auto" />
           <h3 className="text-base font-bold text-slate-800">No requests in this view</h3>
@@ -123,7 +124,7 @@ export function WorkerRequests() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {filteredBookings.map((bk) => (
+          {Array.isArray(filteredBookings) && filteredBookings.map((bk) => (
             <BookingCard
               key={bk._id}
               booking={bk}

@@ -5,7 +5,7 @@ import { matchApi, bookingApi } from '../../services/api';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Card, CardContent } from '../../components/ui/Card';
-import { formatINR } from '../../lib/utils';
+import { formatINR, ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
   Zap,
@@ -77,7 +77,8 @@ export function EmergencyBooking() {
         isEmergency: true
       });
 
-      const worker = matchRes.data.recommendedWorker || matchRes.data.rankedWorkers?.[0];
+      const ranked = ensureArray(matchRes?.data?.rankedWorkers || matchRes?.data);
+      const worker = matchRes?.data?.recommendedWorker || ranked[0];
       if (!worker) {
         toast.error('No emergency worker is immediately reachable. Please try another craft or contact helpline.');
         return;

@@ -1,0 +1,5 @@
+{
+  "appId": "com.sevaconnect.app",
+  "appName": "SevaConnect",
+  "webDir": "frontend/dist"
+}

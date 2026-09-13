@@ -8,7 +8,7 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
 import { Modal } from '../../components/ui/Modal';
-import { formatINR } from '../../lib/utils';
+import { formatINR, ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
   Search,
@@ -79,24 +79,24 @@ export function ServiceDiscovery() {
           isEmergency: false
         });
 
-        let list = matchRes.data.rankedWorkers || [];
+        let list = ensureArray(matchRes?.data?.rankedWorkers || matchRes?.data);
 
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase();
           list = list.filter(
             (w) =>
-              w.name.toLowerCase().includes(q) ||
-              w.location?.toLowerCase().includes(q) ||
-              w.skills?.some((s) => s.toLowerCase().includes(q))
+              w?.name?.toLowerCase().includes(q) ||
+              w?.location?.toLowerCase().includes(q) ||
+              w?.skills?.some((s) => s?.toLowerCase().includes(q))
           );
         }
 
         if (availableOnly) {
-          list = list.filter((w) => w.isAvailable === true);
+          list = list.filter((w) => w?.isAvailable === true);
         }
 
         setWorkers(list);
-        setRecommendedWorker(matchRes.data.recommendedWorker || list[0] || null);
+        setRecommendedWorker(matchRes?.data?.recommendedWorker || list[0] || null);
       } else {
         // Standard filtered query
         const res = await workerApi.getWorkers({
@@ -105,7 +105,7 @@ export function ServiceDiscovery() {
           availableOnly: availableOnly ? 'true' : 'false',
           sort: sortBy
         });
-        setWorkers(res.data || []);
+        setWorkers(ensureArray(res?.data));
         setRecommendedWorker(null);
       }
     } catch (err) {
@@ -241,7 +241,7 @@ export function ServiceDiscovery() {
           <div className="w-8 h-8 border-3 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p className="text-xs text-slate-500 font-medium">Computing FairMatch recommendations...</p>
         </div>
-      ) : workers.length === 0 ? (
+      ) : !Array.isArray(workers) || workers.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 space-y-3">
           <AlertCircle className="w-10 h-10 text-slate-400 mx-auto" />
           <h3 className="text-base font-bold text-slate-800">No matching workers found</h3>
@@ -262,7 +262,7 @@ export function ServiceDiscovery() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {workers.map((worker) => (
+          {Array.isArray(workers) && workers.map((worker) => (
             <WorkerCard
               key={worker._id}
               worker={worker}
@@ -283,8 +283,9 @@ export function ServiceDiscovery() {
             {/* Worker Summary Header */}
             <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-base shadow-xs">
-                {activeWorkerForBooking.name
+                {(activeWorkerForBooking.name || 'Worker')
                   .split(' ')
+                  .filter(Boolean)
                   .map((n) => n[0])
                   .join('')
                   .slice(0, 2)}

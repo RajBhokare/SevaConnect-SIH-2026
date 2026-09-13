@@ -57,7 +57,7 @@ export function ServiceCard({ service, onSelect, isSelected }) {
         </div>
 
         {/* Popular Tasks Pills */}
-        {service.popularTasks && service.popularTasks.length > 0 && (
+        {Array.isArray(service?.popularTasks) && service.popularTasks.length > 0 && (
           <div className="mt-3.5 flex flex-wrap gap-1.5">
             {service.popularTasks.slice(0, 3).map((task, idx) => (
               <span

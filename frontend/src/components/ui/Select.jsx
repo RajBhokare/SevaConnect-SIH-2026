@@ -27,7 +27,7 @@ export const Select = React.forwardRef(({
           )}
           {...props}
         >
-          {options.length > 0
+          {Array.isArray(options) && options.length > 0
             ? options.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}

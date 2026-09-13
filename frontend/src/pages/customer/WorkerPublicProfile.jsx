@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+git import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { workerApi, ratingApi, bookingApi } from '../../services/api';
@@ -8,7 +8,7 @@ import { Modal } from '../../components/ui/Modal';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
 import { RankBadge } from '../../components/RankBadge';
-import { formatINR, formatDate } from '../../lib/utils';
+import { formatINR, formatDate, ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
   Star,
@@ -49,12 +49,14 @@ export function WorkerPublicProfile() {
   const fetchWorkerData = async () => {
     try {
       setLoading(true);
-      const [wRes, rRes] = await Promise.all([
+      const [wRes, rRes] = await Promise.allSettled([
         workerApi.getWorkerById(id),
         ratingApi.getWorkerRatings(id)
       ]);
-      setWorker(wRes.data);
-      setReviews(rRes.data || []);
+      const wData = wRes.status === 'fulfilled' ? wRes.value?.data : null;
+      const rData = rRes.status === 'fulfilled' ? ensureArray(rRes.value?.data) : [];
+      setWorker(wData);
+      setReviews(rData);
     } catch (err) {
       toast.error('Could not load worker profile.');
     } finally {
@@ -131,8 +133,9 @@ export function WorkerPublicProfile() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-14 mb-6">
             <div className="flex items-end gap-4">
               <div className="w-24 h-24 rounded-3xl bg-slate-900 border-4 border-white text-white flex items-center justify-center font-black text-2xl shadow-lg">
-                {worker.name
+                {(worker?.name || 'Worker')
                   .split(' ')
+                  .filter(Boolean)
                   .map((n) => n[0])
                   .join('')
                   .slice(0, 2)}
@@ -213,7 +216,7 @@ export function WorkerPublicProfile() {
                 Specialized Craft Skills
               </h4>
               <div className="flex flex-wrap gap-1.5">
-                {worker.skills?.map((s, idx) => (
+                {Array.isArray(worker.skills) && worker.skills.map((s, idx) => (
                   <span
                     key={idx}
                     className="px-2.5 py-1 bg-brand-50 text-brand-800 rounded-lg text-xs font-semibold"
@@ -241,14 +244,14 @@ export function WorkerPublicProfile() {
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
             <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-            Verified Community Reviews ({reviews.length > 0 ? reviews.length : worker.reviewCount || 1})
+            Verified Community Reviews ({Array.isArray(reviews) && reviews.length > 0 ? reviews.length : worker.reviewCount || 1})
           </h3>
           <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
             {worker.positiveFeedbackPercentage || 100}% Positive Feedback
           </span>
         </div>
 
-        {reviews.length === 0 ? (
+        {!Array.isArray(reviews) || reviews.length === 0 ? (
           <div className="p-4 bg-slate-50 rounded-2xl text-xs text-slate-500">
             "Prompt service, arrived on time with proper cooperative verification, and fixed the leakage cleanly." — Pune Resident
           </div>
@@ -272,7 +275,7 @@ export function WorkerPublicProfile() {
                     )}
                   </div>
                   <div className="flex items-center gap-0.5">
-                    {Array.from({ length: rev.stars }).map((_, i) => (
+                    {Array.from({ length: Math.max(0, Number(rev.stars) || 0) }).map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                     ))}
                   </div>
@@ -282,7 +285,7 @@ export function WorkerPublicProfile() {
                 )}
                 <div className="flex flex-wrap items-center justify-between gap-1 pt-1">
                   <div className="flex flex-wrap gap-1">
-                    {rev.categories && rev.categories.map((cat, ci) => (
+                    {Array.isArray(rev.categories) && rev.categories.map((cat, ci) => (
                       <span key={ci} className="px-2 py-0.5 bg-white text-slate-600 rounded text-[10px] font-medium border border-slate-200">
                         {cat}
                       </span>

@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Ca
 import { Button } from '../../components/ui/Button';
 import { Select } from '../../components/ui/Select';
 import { RankBadge } from '../../components/RankBadge';
-import { formatINR } from '../../lib/utils';
+import { formatINR, ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
   Sparkles,
@@ -65,7 +65,7 @@ export function AiOperations() {
     try {
       setLoadingRanking(true);
       const res = await rankingApi.getLeaderboard();
-      setRankingData(res.data);
+      setRankingData(res?.data || null);
     } catch (err) {
       toast.error('Failed to load ranking leaderboard.');
     } finally {
@@ -122,7 +122,7 @@ export function AiOperations() {
   const runAllocation = async (predictedDemand) => {
     try {
       const workersRes = await workerApi.getWorkers({ category: selectedService });
-      const availableWorkers = workersRes.data || [];
+      const availableWorkers = ensureArray(workersRes?.data);
 
       const res = await aiApi.getAllocation({
         service: selectedService,
@@ -291,11 +291,11 @@ export function AiOperations() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {rankingData?.leaderboard?.map((worker) => (
+                  {Array.isArray(rankingData?.leaderboard) && rankingData.leaderboard.map((worker) => (
                     <tr key={worker._id} className="hover:bg-slate-50/80 transition-colors">
                       <td className="p-4 font-bold text-slate-900 flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-xs">
-                          {worker.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                          {(worker.name || 'Worker').split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2)}
                         </div>
                         <div>
                           <span>{worker.name}</span>
@@ -330,7 +330,7 @@ export function AiOperations() {
                       </td>
                       <td className="p-4">
                         <div className="flex flex-wrap gap-1">
-                          {worker.topCategories?.slice(0, 2).map((cat, ci) => (
+                          {Array.isArray(worker.topCategories) && worker.topCategories.slice(0, 2).map((cat, ci) => (
                             <span key={ci} className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px] font-medium">
                               {cat}
                             </span>

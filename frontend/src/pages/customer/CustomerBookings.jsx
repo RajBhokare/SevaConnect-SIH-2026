@@ -5,7 +5,7 @@ import { BookingCard } from '../../components/BookingCard';
 import { Modal } from '../../components/ui/Modal';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { formatINR } from '../../lib/utils';
+import { formatINR, ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
   CalendarCheck,
@@ -46,7 +46,7 @@ export function CustomerBookings() {
     try {
       setLoading(true);
       const res = await bookingApi.getCustomerBookings();
-      setBookings(res.data || []);
+      setBookings(ensureArray(res?.data));
     } catch (err) {
       toast.error('Failed to load your bookings.');
     } finally {
@@ -117,7 +117,7 @@ export function CustomerBookings() {
     }
   };
 
-  const filteredBookings = bookings.filter((b) => {
+  const filteredBookings = ensureArray(bookings).filter((b) => {
     if (activeTab === 'ALL') return true;
     if (activeTab === 'ACTIVE') return b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS';
     if (activeTab === 'COMPLETED') return b.status === 'COMPLETED';
@@ -160,7 +160,7 @@ export function CustomerBookings() {
           <div className="w-8 h-8 border-3 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p className="text-xs text-slate-500">Loading bookings history...</p>
         </div>
-      ) : filteredBookings.length === 0 ? (
+      ) : !Array.isArray(filteredBookings) || filteredBookings.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 space-y-3">
           <CalendarCheck className="w-10 h-10 text-slate-400 mx-auto" />
           <h3 className="text-base font-bold text-slate-800">No bookings in this tab</h3>
@@ -170,7 +170,7 @@ export function CustomerBookings() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {filteredBookings.map((bk) => (
+          {Array.isArray(filteredBookings) && filteredBookings.map((bk) => (
             <BookingCard
               key={bk._id}
               booking={bk}

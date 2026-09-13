@@ -9,6 +9,7 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
 import { toast } from 'sonner';
+import { ensureArray } from '../../lib/utils';
 import {
   Search,
   MapPin,
@@ -46,16 +47,25 @@ export function CustomerHome() {
   const fetchInitialData = async () => {
     try {
       setLoading(true);
-      const [srvRes, wrkRes] = await Promise.all([
+      const [srvRes, wrkRes] = await Promise.allSettled([
         serviceCatalogApi.getServices(),
         workerApi.getWorkers({ availableOnly: 'true' })
       ]);
-      setServices(srvRes.data || []);
-      setWorkers(wrkRes.data || []);
+
+      const srvData = srvRes.status === 'fulfilled' ? ensureArray(srvRes.value?.data) : [];
+      const wrkData = wrkRes.status === 'fulfilled' ? ensureArray(wrkRes.value?.data) : [];
+
+      setServices(srvData);
+      setWorkers(wrkData);
 
       if (user) {
-        const bkRes = await bookingApi.getCustomerBookings();
-        setRecentBookings((bkRes.data || []).slice(0, 2));
+        try {
+          const bkRes = await bookingApi.getCustomerBookings();
+          setRecentBookings(ensureArray(bkRes?.data).slice(0, 2));
+        } catch (bkErr) {
+          console.error('Error fetching recent bookings:', bkErr);
+          setRecentBookings([]);
+        }
       }
     } catch (err) {
       console.error('Error fetching home data:', err);
@@ -279,7 +289,7 @@ export function CustomerHome() {
       </div>
 
       {/* 5. Recent Bookings (if logged in) */}
-      {recentBookings.length > 0 && (
+      {Array.isArray(recentBookings) && recentBookings.length > 0 && (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -321,7 +331,7 @@ export function CustomerHome() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {services.map((service) => (
+          {Array.isArray(services) && services.map((service) => (
             <ServiceCard
               key={service._id}
               service={service}
@@ -352,7 +362,7 @@ export function CustomerHome() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {workers.slice(0, 3).map((worker, idx) => (
+          {Array.isArray(workers) && workers.slice(0, 3).map((worker, idx) => (
             <WorkerCard
               key={worker._id}
               worker={worker}

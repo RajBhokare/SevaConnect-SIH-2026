@@ -189,7 +189,7 @@ export function RankBadge({
             )}
 
             {/* Top Recognized Strengths / Feedback Categories */}
-            {worker?.topCategories && worker.topCategories.length > 0 && (
+            {Array.isArray(worker?.topCategories) && worker.topCategories.length > 0 && (
               <div className="space-y-1.5">
                 <p className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
                   Top Recognized Qualities

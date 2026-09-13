@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { workerApi } from '../../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
-import { formatINR } from '../../lib/utils';
+import { formatINR, ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
   ShieldCheck,
@@ -30,7 +30,7 @@ export function WorkerWelfare() {
     try {
       setLoading(true);
       const res = await workerApi.getWelfare();
-      setWelfareData(res.data);
+      setWelfareData(res?.data || null);
     } catch (err) {
       toast.error('Failed to load welfare records.');
     } finally {
@@ -48,7 +48,7 @@ export function WorkerWelfare() {
   }
 
   const welfare = welfareData?.welfareStatus || {};
-  const benefits = welfareData?.benefits || [];
+  const benefits = ensureArray(welfareData?.benefits);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-left">
@@ -144,7 +144,7 @@ export function WorkerWelfare() {
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {benefits.map((b, idx) => (
+          {Array.isArray(benefits) && benefits.map((b, idx) => (
             <Card key={idx} className="border-slate-200/90 shadow-xs">
               <CardContent className="p-5 flex items-start justify-between gap-3">
                 <div className="space-y-1">

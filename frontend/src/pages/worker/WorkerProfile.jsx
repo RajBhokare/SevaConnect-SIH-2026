@@ -44,14 +44,14 @@ export function WorkerProfile() {
     try {
       setLoading(true);
       const res = await workerApi.getDashboard();
-      const w = res.data.worker;
-      setWorker(w);
+      const w = res?.data?.worker;
+      setWorker(w || null);
       if (w) {
         setName(w.name || '');
         setPhone(w.phone || '');
         setLocation(w.location || '');
         setServiceArea(w.serviceArea || '');
-        setSkills(w.skills ? w.skills.join(', ') : '');
+        setSkills(Array.isArray(w.skills) ? w.skills.join(', ') : (typeof w.skills === 'string' ? w.skills : ''));
         setExperience(w.experience || 3);
         setHourlyRate(w.hourlyRate || 280);
         setServiceRadius(w.serviceRadius || 10);

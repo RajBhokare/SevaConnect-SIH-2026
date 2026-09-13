@@ -22,3 +22,25 @@ export function formatDate(dateString) {
     year: 'numeric'
   });
 }
+
+/**
+ * Safely extracts/normalizes an array from various API response shapes
+ * (plain array, { data: [] }, { services: [] }, { workers: [] }, etc.)
+ */
+export function ensureArray(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'object') {
+    if (Array.isArray(val.data)) return val.data;
+    if (Array.isArray(val.services)) return val.services;
+    if (Array.isArray(val.workers)) return val.workers;
+    if (Array.isArray(val.bookings)) return val.bookings;
+    if (Array.isArray(val.reviews)) return val.reviews;
+    if (Array.isArray(val.benefits)) return val.benefits;
+    if (Array.isArray(val.leaderboard)) return val.leaderboard;
+    if (Array.isArray(val.rankedWorkers)) return val.rankedWorkers;
+    if (Array.isArray(val.items)) return val.items;
+  }
+  return [];
+}
+

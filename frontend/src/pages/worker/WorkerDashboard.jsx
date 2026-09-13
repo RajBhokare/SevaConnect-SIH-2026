@@ -7,7 +7,7 @@ import { RankBadge } from '../../components/RankBadge';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { formatINR } from '../../lib/utils';
+import { formatINR, ensureArray } from '../../lib/utils';
 import { toast } from 'sonner';
 import {
   Briefcase,
@@ -39,7 +39,7 @@ export function WorkerDashboard() {
     try {
       setLoading(true);
       const res = await workerApi.getDashboard();
-      setDashboardData(res.data);
+      setDashboardData(res?.data || null);
     } catch (err) {
       console.error('Error loading worker dashboard:', err);
       toast.error('Failed to load dashboard.');
@@ -115,7 +115,7 @@ export function WorkerDashboard() {
   const worker = dashboardData?.worker || user?.workerProfile;
   const stats = dashboardData?.stats || {};
   const activeJob = dashboardData?.activeJob;
-  const pendingRequests = dashboardData?.pendingRequests || [];
+  const pendingRequests = ensureArray(dashboardData?.pendingRequests);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-left">
@@ -275,7 +275,7 @@ export function WorkerDashboard() {
           </Link>
         </div>
 
-        {pendingRequests.length === 0 ? (
+        {!Array.isArray(pendingRequests) || pendingRequests.length === 0 ? (
           <div className="p-8 bg-white rounded-3xl border border-slate-200 text-center space-y-2">
             <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
             <h3 className="text-sm font-bold text-slate-800">All caught up!</h3>
@@ -285,7 +285,7 @@ export function WorkerDashboard() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {pendingRequests.map((bk) => (
+            {Array.isArray(pendingRequests) && pendingRequests.map((bk) => (
               <BookingCard
                 key={bk._id}
                 booking={bk}
